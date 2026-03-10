@@ -7,7 +7,8 @@ from typing import NoReturn
 from python_project_blueprint.utils.logging.loggingsetup import logging_setup
 from python_project_blueprint.runtime.buildruntime import build_runtime
 from python_project_blueprint.cli.parsecli import parse_cli
-#import correct packages
+from python_project_blueprint.app import App
+from python_project_blueprint.utils.logging.logruntime import log_runtime
 
 #parse args/json into a dataclass (None  or Value)
 #pass that dataclass into build_context(dc)
@@ -33,7 +34,7 @@ def main() -> NoReturn:
     - Calls app.run
     """
     # FIX: Change appname
-    APPNAME = "myapp"
+    APPNAME = "python-project-blueprint"
 
     # Setup basic logging
     #-------------------------------------------------------------------------#
@@ -50,7 +51,10 @@ def main() -> NoReturn:
         logging_setup(APPNAME,
                       rt.paths,
                       rt.log)
-        app = App(rt.cfg, rt.dev,)
+
+        log_runtime(rt)
+        app = App(rt.meta, rt.dev, rt.db, rt.paths)
+        app.run(rt.cmds)
     except KeyboardInterrupt:
         logger.info("Interrupted by user.")
         sys.exit(130)

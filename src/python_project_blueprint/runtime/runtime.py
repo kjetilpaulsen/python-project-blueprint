@@ -1,10 +1,16 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 # Immutables
+@dataclass(frozen=True)
+class MetaInfo:
+    app_name: str
+    app_version: str
+    app_description: str
+
 @dataclass(frozen=True)
 class AppPaths:
     data_dir: Path
@@ -20,37 +26,39 @@ class AppPaths:
 
 @dataclass(frozen=True)
 class CFGDev:
-    dev: bool = False
+    dev_mode: bool = False
     dry_run: bool = False
 
 @dataclass(frozen=True)
 class CFGLogging:
     log_level: int = logging.INFO
     console_level: int = logging.INFO
-    log_to_console: bool | None = False
-    log_to_stderr: bool = False
+    console_log: bool = False
+    stderr_log: bool = False
 
 @dataclass(frozen=True)
 class CFGDataBase:
-    dbname: str = "myapp"
-    host: str  = "/run/postgresql"
-    user: str | None = None
-    port: int = 5432
+    db_host: str | None = None
+    db_dbname: str | None = None
+    db_user: str | None = None
+    db_password: str | None = None
+    db_port: int | None = None
 
 # Mutables
 @dataclass
-class CmdFirstCommand:
+class CmdDisplayVersion:
     run: bool = False
 
 # Consolidation
 @dataclass(frozen=True)
 class Runtime:
+    meta: MetaInfo
     paths: AppPaths
     dev: CFGDev
     log: CFGLogging
     db: CFGDataBase
 
-    cmds: list = [
-    CmdFirstCommand,
+    cmds: tuple[
+        CmdDisplayVersion,
     ]
 

@@ -32,7 +32,7 @@ def logging_setup(appname: str,
     )
 
     # If only logging to stderr, like in docker
-    if log.log_to_stderr:
+    if log.stderr_log:
         stderr_handler = logging.StreamHandler(sys.stderr)
         stderr_handler.setLevel(log.log_level)
         stderr_handler.setFormatter(formatter)
@@ -65,7 +65,7 @@ def logging_setup(appname: str,
     root_logger.addHandler(last_run_handler)
 
     # If also want logging output to screen
-    if log.log_to_console:
+    if log.console_log:
         console_handler = logging.StreamHandler(sys.stderr)
         console_handler.setLevel(log.console_level)
         console_handler.setFormatter(formatter)
