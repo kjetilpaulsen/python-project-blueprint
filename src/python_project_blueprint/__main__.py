@@ -1,0 +1,5 @@
+# FIX: Change imports from "python_project_blueprint" to packagename
+from python_project_blueprint.cli.cli import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())
