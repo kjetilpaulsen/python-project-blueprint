@@ -17,9 +17,16 @@ from python_project_blueprint.utils.logging.loggingsetup import logging_setup
 from python_project_blueprint.utils.logging.logruntime import log_runtime
 
 logger = logging.getLogger(__name__)
+
+def _resolve_version() -> str:
+    try:
+        return metadata.version(IDENTITY.dist_name)
+    except metadata.PackageNotFoundError:
+        return "Cannot resolve version"
+
 api = FastAPI(
     title=IDENTITY.app_name,
-    version=metadata.version(IDENTITY.dist_name),
+    version=_resolve_version(),
     description="HTTP API frontend.",
     )
 
