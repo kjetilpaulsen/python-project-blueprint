@@ -19,7 +19,6 @@ class EvtProgress(Event):
 class EvtError(Event):
     message: str
     fatal: bool = True
-    exit_code: int = 1
 
 @dataclass(frozen=True)
 class EvtResult(Event):

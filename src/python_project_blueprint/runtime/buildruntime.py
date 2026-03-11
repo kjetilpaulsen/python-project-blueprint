@@ -3,26 +3,45 @@ from __future__ import annotations
 from dataclasses import asdict
 import logging
 from importlib import metadata
+import pathlib
 from typing import Any
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from python_project_blueprint.config.config import build_config_file
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.parsedinput import RuntimeOverrides
 from python_project_blueprint.runtime.runtime import (
     CFGDataBase,
     CFGDev,
     CFGLogging,
+    CFGMisc,
     MetaInfo,
     Runtime,
 )
-from python_project_blueprint.utils.paths.paths import ensure_dirs, get_app_paths
+from python_project_blueprint.utils.paths.paths import ensure_dirs, ensure_optional_dirs, get_app_paths
 
+def resolve_env_file() -> str | None:
+    """
+    Checks to see if we have .env file in cwd, and returns it if it exists. If
+    not check to see if a config file exists in the XDG path for config, and if
+    so return it as the env file. If neither exist, return None
+
+    @Returns
+    - str : path to the .env/.conf file to use
+    """
+    cwd_env = pathlib.Path.cwd() / ".env"
+    if cwd_env.exists():
+        return str(cwd_env)
+    xdg_env = get_app_paths().config_dir / (IDENTITY.logger_name + ".conf")
+    if xdg_env.exists():
+        return str(xdg_env)
+    return None
 
 class RuntimeSettings(BaseSettings):
     model_config = SettingsConfigDict(
-            env_file=".env",
+            env_file=resolve_env_file(),
             env_file_encoding="utf-8",
             extra="ignore",
     )
@@ -33,6 +52,7 @@ class RuntimeSettings(BaseSettings):
     #CFGLogging
     log_level: int = logging.INFO
     console_level: int = logging.INFO
+    file_log: bool = False
     console_log: bool = False
     stderr_log: bool = False
     #CFGDataBase
@@ -41,6 +61,8 @@ class RuntimeSettings(BaseSettings):
     db_user: str | None = None
     db_password: str | None = None
     db_port: int | None = None
+    #CFGMisc
+    build_config: bool | None = None
 
     @field_validator("log_level", "console_level", mode="before")
     @classmethod
@@ -74,36 +96,43 @@ def read_metadata() -> MetaInfo:
     """
     try:
         app_version = metadata.version(IDENTITY.dist_name)
-    except metadata.PackageNotFoundError:
-        app_version = "0.0.0"
+    except metadata.PackageNotFoundError as e:
+        app_version = f"Failed to find version - {e}"
 
     try:
         meta = metadata.metadata(IDENTITY.dist_name)
         app_description = meta.get("Summary")
-    except metadata.PackageNotFoundError:
-        app_description = "No description"
+    except metadata.PackageNotFoundError as e:
+        app_description = f"Failed to find description - {e}"
 
     return MetaInfo(
         app_name=IDENTITY.app_name,
         app_version=app_version,
-        app_description=app_description,
-    )
+        app_description=app_description)
 
 
 def build_runtime(rto: RuntimeOverrides) -> Runtime:
     """
     """
-    #Override rule is: contex > env > .env > defaults
-
-    clean_rto = compact_context(asdict(rto))
-    settings = RuntimeSettings(**clean_rto)
-
     # Build Runtime dataclasses
     meta = read_metadata()
 
+    # Resolve XDG paths and create dirs if not already exists
     paths = get_app_paths()
-    ensure_dirs(paths, logs_dir=True)
+    ensure_dirs(paths)
 
+    # Resolve to build .conf file in XDG config directory.
+    if rto.build_config:
+        build_config_file(paths)
+
+    #Override rule is: contex > env > .env > .conf > defaults
+    clean_rto = compact_context(asdict(rto))
+    settings = RuntimeSettings(**clean_rto)
+
+    # Build directories that are optional
+    ensure_optional_dirs(paths, logs_dir=settings.file_log)
+
+    # Build runtime dataclasses
     dev = CFGDev(
         dev_mode = settings.dev_mode,
         dry_run = settings.dry_run
@@ -112,6 +141,7 @@ def build_runtime(rto: RuntimeOverrides) -> Runtime:
     log = CFGLogging(
         log_level = settings.log_level,
         console_level = settings.console_level,
+        file_log = settings.file_log,
         console_log = settings.console_log,
         stderr_log = settings.stderr_log,
     )
@@ -123,6 +153,9 @@ def build_runtime(rto: RuntimeOverrides) -> Runtime:
         db_password = settings.db_password,
         db_port = settings.db_port or 5432,
     )
+    misc=CFGMisc(
+        build_config = settings.build_config,
+    )
 
     return Runtime(
         meta=meta,
@@ -130,4 +163,5 @@ def build_runtime(rto: RuntimeOverrides) -> Runtime:
         dev=dev,
         log=log,
         db=db,
+        misc=misc,
     )

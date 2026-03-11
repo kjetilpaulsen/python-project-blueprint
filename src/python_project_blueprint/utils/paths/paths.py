@@ -66,23 +66,31 @@ def get_app_paths() -> AppPaths:
 
     tmp_dir = cache_dir / "tmp"
 
+
     return AppPaths(data_dir, state_dir, cache_dir, tmp_dir, config_dir)
 
-def ensure_dirs(paths: AppPaths, 
+def ensure_dirs(paths: AppPaths) -> None:
+    """
+    Creates the default directories
+
+    @Param
+    - paths: AppPaths
+    """
+    for p in (paths.data_dir, paths.state_dir, paths.cache_dir, paths.tmp_dir, paths.config_dir):
+        p.mkdir(parents=True, exist_ok=True)
+
+def ensure_optional_dirs(paths: AppPaths,
                 logs_dir: bool = False,
                 ) -> None:
     """
-    Creates the directories if they don't already exist
+    Creates extra directories if wanted and they don't already exist
 
     @Params
     - paths: AppPaths
+    - *_dir: bool
 
     @Returns
     - None
     """
-    for p in (paths.data_dir, paths.state_dir, paths.cache_dir, paths.tmp_dir, paths.config_dir):
-        p.mkdir(parents=True, exist_ok=True)
-    # If you have added more to AppPaths, you creates those dirs here, remember
-    # to also add them to the params of ensure_dirs
     if logs_dir:
         paths.logs_dir.mkdir(parents=True, exist_ok = True)

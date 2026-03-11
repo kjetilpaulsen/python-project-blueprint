@@ -8,6 +8,16 @@ from pathlib import Path
 # FIX: Change imports from "python_project_blueprint" to packagename
 from python_project_blueprint.runtime.runtime import CFGLogging, AppPaths
 
+def logging_basic_setup() -> None:
+    """
+    Sets up very basic level of logging to stderr before config, paths, logging
+    is configured.
+    """
+    logging.basicConfig(
+            level=logging.INFO,
+            format="%(levelname)s %(name)s: %(message)s",
+            force=True,
+    )
 
 def logging_setup(appname: str, 
                   paths: AppPaths, 
@@ -20,7 +30,10 @@ def logging_setup(appname: str,
 
     # Create the parent logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(min(log.log_level,log.console_level))
+    if log.console_log:
+        root_logger.setLevel(min(log.log_level,log.console_level))
+    else:
+        root_logger.setLevel(log.log_level)
 
     # Remove existing handlers from logging.basicConfig
     root_logger.handlers.clear()
@@ -31,38 +44,38 @@ def logging_setup(appname: str,
             datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    # If only logging to stderr, like in docker
+    # If only logging to stderr
     if log.stderr_log:
         stderr_handler = logging.StreamHandler(sys.stderr)
         stderr_handler.setLevel(log.log_level)
         stderr_handler.setFormatter(formatter)
         root_logger.addHandler(stderr_handler)
-        return None
 
     # Logging to files
-    last_run_file: Path = paths.logs_dir / f"{appname}.log"
-    history_file: Path = paths.logs_dir / f"{appname}_history.log"
+    if log.file_log:
+        last_run_file: Path = paths.logs_dir / f"{appname}.log"
+        history_file: Path = paths.logs_dir / f"{appname}_history.log"
 
-    # History logging
-    history_handler = RotatingFileHandler(
-            history_file,
-            maxBytes=10_000_000,
-            backupCount=5,
+        # History logging
+        history_handler = RotatingFileHandler(
+                history_file,
+                maxBytes=10_000_000,
+                backupCount=5,
+                encoding="utf-8",
+        )
+        history_handler.setLevel(log.log_level)
+        history_handler.setFormatter(formatter)
+        root_logger.addHandler(history_handler)
+
+        # Only last run logging
+        last_run_handler = logging.FileHandler(
+            last_run_file,
+            mode="w",
             encoding="utf-8",
-    )
-    history_handler.setLevel(log.log_level)
-    history_handler.setFormatter(formatter)
-    root_logger.addHandler(history_handler)
-
-    # Only last run logging
-    last_run_handler = logging.FileHandler(
-        last_run_file,
-        mode="w",
-        encoding="utf-8",
-    )
-    last_run_handler.setLevel(log.log_level)
-    last_run_handler.setFormatter(formatter)
-    root_logger.addHandler(last_run_handler)
+        )
+        last_run_handler.setLevel(log.log_level)
+        last_run_handler.setFormatter(formatter)
+        root_logger.addHandler(last_run_handler)
 
     # If also want logging output to screen
     if log.console_log:

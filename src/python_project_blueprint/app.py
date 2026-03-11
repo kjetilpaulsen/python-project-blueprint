@@ -5,7 +5,7 @@ import logging
 
 from python_project_blueprint.commands.commands import Command, DisplayVersion
 from python_project_blueprint.events.events import Event
-from python_project_blueprint.handlers.handledisplayversion import HandleDisplayVersion
+from python_project_blueprint.handlers.displayversionhandler import DisplayVersionHandler
 from python_project_blueprint.runtime.runtime import AppPaths, CFGDataBase, CFGDev, MetaInfo
 
 
@@ -51,7 +51,7 @@ class App:
         - yields Iterator[Event]
         """
         if isinstance(cmd, DisplayVersion):
-            cmd_handler = HandleDisplayVersion(self.meta)
+            cmd_handler = DisplayVersionHandler(self.meta)
             yield from cmd_handler.handle()
             return
         raise ValueError(f"Unsupported command: {type(cmd).__name__}")

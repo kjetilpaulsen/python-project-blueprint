@@ -7,7 +7,7 @@ from python_project_blueprint.runtime.runtime import MetaInfo
 
 logger = logging.getLogger(__name__)
 
-class HandleDisplayVersion:
+class DisplayVersionHandler:
     def __init__(self, meta: MetaInfo):
         self.meta = meta
 

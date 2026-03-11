@@ -18,9 +18,7 @@ class CliEventHandler:
             # Build progressbar
             pass
         elif isinstance(evt, EvtError):
-            logger.error(f"{evt.message}")
-            if evt.fatal:
-                sys.exit(evt.exit_code)
+            logger.error(f"{evt.message} - Fatal={evt.fatal}")
         elif isinstance(evt, EvtResult):
             print(f"{evt.command_name} - {evt.payload}")
         else:

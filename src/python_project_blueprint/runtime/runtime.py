@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 # Immutables
@@ -9,7 +9,7 @@ from pathlib import Path
 class MetaInfo:
     app_name: str
     app_version: str
-    app_description: str
+    app_description: str 
 
 @dataclass(frozen=True)
 class AppPaths:
@@ -33,6 +33,7 @@ class CFGDev:
 class CFGLogging:
     log_level: int = logging.INFO
     console_level: int = logging.INFO
+    file_log: bool = False
     console_log: bool = False
     stderr_log: bool = False
 
@@ -44,6 +45,10 @@ class CFGDataBase:
     db_password: str | None = None
     db_port: int | None = None
 
+@dataclass(frozen=True)
+class CFGMisc:
+    build_config: bool | None = None
+
 # Consolidation
 @dataclass(frozen=True)
 class Runtime:
@@ -52,3 +57,4 @@ class Runtime:
     dev: CFGDev
     log: CFGLogging
     db: CFGDataBase
+    misc: CFGMisc

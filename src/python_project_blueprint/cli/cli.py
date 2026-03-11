@@ -2,28 +2,25 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import NoReturn
 
 # FIX: Change imports from "python_project_blueprint" to packagename
 from python_project_blueprint.cli.clieventhandler import CliEventHandler
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.utils.logging.loggingsetup import logging_setup
+from python_project_blueprint.utils.logging.loggingsetup import logging_basic_setup, logging_setup
 from python_project_blueprint.runtime.buildruntime import build_runtime
 from python_project_blueprint.cli.parsecli import parse_cli
 from python_project_blueprint.app import App
 from python_project_blueprint.utils.logging.logruntime import log_runtime
 
-def main() -> NoReturn:
+def main() -> int:
     """
-    Main entrypoint for CLI:
+    Main entrypoint for CLI
     """
 
     # Setup basic logging
-    logging.basicConfig(
-            level=logging.INFO,
-            format="%(levelname)s %(name)s: %(message)s",
-    )
-    logger = logging.getLogger(IDENTITY.app_name)
+    logging_basic_setup()
+    logger = logging.getLogger(IDENTITY.logger_name)
+    logger.info("Basic logging started")
 
     # Try to start program
     try:
