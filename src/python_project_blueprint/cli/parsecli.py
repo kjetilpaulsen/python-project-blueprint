@@ -54,6 +54,7 @@ def parse_cli() -> ParsedInput:
     commands: list[Command] = []
     if args.command == "version":
         commands.append(DisplayVersion())
+        commands.append(DisplayVersion())
 
     return ParsedInput(
         overrides=overrides,
