@@ -1,6 +1,7 @@
 import logging
 
-from python_project_blueprint.runtime.runtime import AppPaths, CFGDataBase, CFGDev, CmdDisplayVersion, MetaInfo
+from python_project_blueprint.commands.commands import DisplayVersion
+from python_project_blueprint.runtime.runtime import AppPaths, CFGDataBase, CFGDev, MetaInfo
 
 
 logger = logging.getLogger(__name__)
@@ -25,12 +26,12 @@ class App:
         return None
 
     def _handle_command(self, cmd):
-        if isinstance(cmd, CmdDisplayVersion):
+        if isinstance(cmd, DisplayVersion):
             logger.info(f"Version: {self.meta.app_version}")
         yield "Yielding event"
 
     def _handle_event(self, evt):
-        logger.info("{evt}")
+        logger.info(f"{evt}")
 
     def run(self, cmds: tuple) -> None:
         """

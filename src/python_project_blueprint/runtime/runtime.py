@@ -44,11 +44,6 @@ class CFGDataBase:
     db_password: str | None = None
     db_port: int | None = None
 
-# Mutables
-@dataclass
-class CmdDisplayVersion:
-    run: bool = False
-
 # Consolidation
 @dataclass(frozen=True)
 class Runtime:
@@ -57,8 +52,3 @@ class Runtime:
     dev: CFGDev
     log: CFGLogging
     db: CFGDataBase
-
-    cmds: tuple[
-        CmdDisplayVersion,
-    ]
-

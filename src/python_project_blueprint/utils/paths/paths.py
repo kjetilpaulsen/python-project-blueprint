@@ -16,6 +16,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.runtime import AppPaths
 
 
@@ -33,7 +34,7 @@ def _xdg_home(var: str, fallback: Path) -> Path:
     v = os.getenv(var)
     return Path(v) if v and v.strip() else fallback
 
-def get_app_paths(app_name: str) -> AppPaths:
+def get_app_paths() -> AppPaths:
     """
     XDG-based paths.
 
@@ -47,15 +48,9 @@ def get_app_paths(app_name: str) -> AppPaths:
     Docker:
         Sets XDG_*_HOME to /data, /state, /cache, /config -> /data/<app_name> ..
 
-    @Params
-    - app_name : str : the name of the application
-
     @Returns
     - AppPaths : dataclass : containing the paths
     """
-    app_name = app_name.strip()
-    if not app_name:
-        raise ValueError("app_name must be non-empty")
 
     home = Path.home()
 
@@ -64,10 +59,10 @@ def get_app_paths(app_name: str) -> AppPaths:
     cache_home = _xdg_home("XDG_CACHE_HOME", home / ".cache")
     config_home = _xdg_home("XDG_CONFIG_HOME", home / ".config")
 
-    data_dir = data_home / app_name
-    state_dir = state_home / app_name
-    cache_dir = cache_home / app_name
-    config_dir = config_home / app_name
+    data_dir = data_home / IDENTITY.app_name
+    state_dir = state_home / IDENTITY.app_name
+    cache_dir = cache_home / IDENTITY.app_name
+    config_dir = config_home / IDENTITY.app_name
 
     tmp_dir = cache_dir / "tmp"
 

@@ -4,6 +4,7 @@ import logging
 import sys
 from typing import NoReturn
 # FIX: Change imports from "python_project_blueprint" to packagename
+from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.utils.logging.loggingsetup import logging_setup
 from python_project_blueprint.runtime.buildruntime import build_runtime
 from python_project_blueprint.cli.parsecli import parse_cli
@@ -42,19 +43,19 @@ def main() -> NoReturn:
             level=logging.INFO,
             format="%(levelname)s %(name)s: %(message)s",
     )
-    logger = logging.getLogger(APPNAME)
+    logger = logging.getLogger(IDENTITY.app_name)
 
     # Try to start program
     #-------------------------------------------------------------------------#
     try:
-        rt = build_runtime(APPNAME, parse_cli(APPNAME))
-        logging_setup(APPNAME,
+        pi = parse_cli()
+        rt = build_runtime(pi.overrides)
+        logging_setup(IDENTITY.logger_name,
                       rt.paths,
                       rt.log)
-
         log_runtime(rt)
         app = App(rt.meta, rt.dev, rt.db, rt.paths)
-        app.run(rt.cmds)
+        app.run(pi.commands)
     except KeyboardInterrupt:
         logger.info("Interrupted by user.")
         sys.exit(130)
