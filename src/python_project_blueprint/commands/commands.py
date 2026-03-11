@@ -7,4 +7,4 @@ class Command:
 
 @dataclass(frozen=True)
 class DisplayVersion(Command):
-    pass
+    uppercase: bool = False

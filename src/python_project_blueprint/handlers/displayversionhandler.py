@@ -2,13 +2,16 @@ from __future__ import annotations
 import logging
 from typing import Any, Iterator
 
+from python_project_blueprint.commands.commands import Command
 from python_project_blueprint.events.events import Event, EvtResult
+from python_project_blueprint.handlers.commandhandler import CommandHandler
 from python_project_blueprint.runtime.runtime import MetaInfo
 
 logger = logging.getLogger(__name__)
 
-class DisplayVersionHandler:
-    def __init__(self, meta: MetaInfo):
+class DisplayVersionHandler(CommandHandler):
+    def __init__(self, cmd: Command, meta: MetaInfo):
+        self.cmd = cmd
         self.meta = meta
 
     def handle(self) -> Iterator[Event]:
@@ -42,7 +45,10 @@ class DisplayVersionHandler:
         @Returns
         - yields EvtResult
         """
+        version = f"v{self.meta.app_version}"
+        if self.cmd.uppercase:
+            version = version.upper()
         yield EvtResult(
             command_name="DisplayVersion",
-            payload={"version": self.meta.app_version},
+            payload={"version": version},
             )

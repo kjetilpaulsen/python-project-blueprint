@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-
-from python_project_blueprint.commands.commands import Command
+from dataclasses import dataclass, field
 
 @dataclass(frozen=True)
 class RuntimeOverrides:
@@ -19,9 +17,14 @@ class RuntimeOverrides:
     db_port: int | None = None
 
 @dataclass(frozen=True)
+class FrontendCommandInput:
+    name: str
+    options: dict[str, object] = field(default_factory=dict)
+
+@dataclass(frozen=True)
 class ParsedInput:
     overrides: RuntimeOverrides
     commands: tuple[
-        Command,
+        FrontendCommandInput,
         ...
     ]

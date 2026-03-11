@@ -5,8 +5,7 @@ import logging
 import sys
 
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.commands.commands import DisplayVersion, Command
-from python_project_blueprint.runtime.parsedinput import ParsedInput, RuntimeOverrides
+from python_project_blueprint.runtime.parsedinput import FrontendCommandInput, ParsedInput, RuntimeOverrides
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ def parse_cli() -> ParsedInput:
 
     # Version
     version_parser = subparses.add_parser("version", help="Display the current version")
-    version_parser.add_argument("--uppercase", action="store_true", default=True, help="Displays the version in uppercase letters")
+    version_parser.add_argument("--uppercase", action="store_true", default=False, help="Displays the version in uppercase letters")
 
     # Parse them
     args = parser.parse_args(sys.argv[1:])
@@ -64,13 +63,17 @@ def parse_cli() -> ParsedInput:
         db_password=args.db_password,
         db_port=args.db_port,
     )
-    # Create a template for passing args.command into a function that builds
-    # the list of Commands. e.g. returns list[Command]. We simply call
 
-    commands: list[Command] = []
+    commands: list[FrontendCommandInput] = []
     if args.command == "version":
-        commands.append(DisplayVersion())
-        commands.append(DisplayVersion())
+        commands.append(
+            FrontendCommandInput(
+                name="version",
+                options={
+                    "uppercase": args.uppercase,
+                },
+            )
+        )
 
     return ParsedInput(
         overrides=overrides,

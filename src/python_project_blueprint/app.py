@@ -1,7 +1,7 @@
 from __future__ import annotations
-from collections.abc import Iterable, Iterator, Sequence
-from typing import Any
+from collections.abc import Iterator, Sequence, Callable
 import logging
+from typing import Any
 
 from python_project_blueprint.commands.commands import Command, DisplayVersion
 from python_project_blueprint.events.events import Event
@@ -50,8 +50,10 @@ class App:
         @Returns
         - yields Iterator[Event]
         """
-        if isinstance(cmd, DisplayVersion):
-            cmd_handler = DisplayVersionHandler(self.meta)
-            yield from cmd_handler.handle()
-            return
-        raise ValueError(f"Unsupported command: {type(cmd).__name__}")
+        self._handlers: dict[type[Command], Callable] = {
+            DisplayVersion: lambda cmd: DisplayVersionHandler(cmd, self.meta).handle(),
+        }
+        handler = self._handlers.get(type(cmd)) 
+        if handler is None:
+            raise ValueError(f"Command not found in _handlers: {type(cmd).__name__}")
+        yield from handler(cmd)
