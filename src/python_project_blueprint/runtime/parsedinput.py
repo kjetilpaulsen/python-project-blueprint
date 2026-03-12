@@ -22,7 +22,7 @@ class FrontendCommandInput:
     options: dict[str, object] = field(default_factory=dict)
 
 @dataclass(frozen=True)
-class ParsedInput:
+class CliParsedInput:
     overrides: RuntimeOverrides
     commands: tuple[
         FrontendCommandInput,

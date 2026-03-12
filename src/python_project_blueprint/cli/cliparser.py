@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import argparse
 import logging
-import sys
 
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.runtime.parsedinput import FrontendCommandInput, ParsedInput, RuntimeOverrides
+from python_project_blueprint.runtime.parsedinput import FrontendCommandInput, CliParsedInput, RuntimeOverrides
 
 logger = logging.getLogger(__name__)
 
-def parse_cli() -> ParsedInput:
+def cli_parser(argv: list[str] | None = None) -> CliParsedInput:
     """
     Resolves argv and returns the arguments passed as a dict
 
@@ -18,7 +17,8 @@ def parse_cli() -> ParsedInput:
     - Add to return dict
     """
 
-    # Main parser
+    logger.info("Parsing argv ..")
+
     parser = argparse.ArgumentParser(prog = IDENTITY.app_name)
 
     parser.add_argument("--dev-mode", action=argparse.BooleanOptionalAction, default=None, help="Enable developer conviniences")
@@ -45,9 +45,9 @@ def parse_cli() -> ParsedInput:
     version_parser.add_argument("--uppercase", action="store_true", default=False, help="Displays the version in uppercase letters")
 
     # Parse them
-    args = parser.parse_args(sys.argv[1:])
 
-    # Build overrides Dataclass
+    args = parser.parse_args(argv)
+
     overrides = RuntimeOverrides(
         dev_mode=args.dev_mode,
         dry_run=args.dry_run,
@@ -74,8 +74,7 @@ def parse_cli() -> ParsedInput:
                 },
             )
         )
-
-    return ParsedInput(
+    return CliParsedInput(
         overrides=overrides,
         commands=tuple(commands),
     )

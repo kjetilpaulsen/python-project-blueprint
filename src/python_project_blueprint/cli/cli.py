@@ -7,35 +7,31 @@ import sys
 from python_project_blueprint.cli.clieventhandler import CliEventHandler
 from python_project_blueprint.commands.buildcommands import build_commands
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.utils.logging.loggingsetup import logging_basic_setup, logging_setup
+from python_project_blueprint.utils.logging.loggingsetup import logging_setup
 from python_project_blueprint.runtime.buildruntime import build_runtime
-from python_project_blueprint.cli.parsecli import parse_cli
+from python_project_blueprint.cli.cliparser import cli_parser
 from python_project_blueprint.app import App
 from python_project_blueprint.utils.logging.logruntime import log_runtime
 
-def main() -> int:
+def cli(argv: list[str] | None = None) -> int:
     """
     Main entrypoint for CLI
     """
-
-    # Setup basic logging
-    logging_basic_setup()
     logger = logging.getLogger(IDENTITY.logger_name)
-    logger.info("Basic logging started")
-
-    # Try to start program
+    logger.info("Starting CLI entrypoint")
     try:
-        parsed_input = parse_cli()
+        parsed_input = cli_parser(argv)
 
         commands = build_commands(parsed_input.commands)
-        rt = build_runtime(parsed_input.overrides)
+        runtime = build_runtime(parsed_input.overrides)
 
+        logger.info("Setting up logger ..")
         logging_setup(IDENTITY.logger_name,
-                      rt.paths,
-                      rt.log)
-        log_runtime(rt)
+                      runtime.paths,
+                      runtime.log)
+        log_runtime(runtime)
 
-        app = App(rt.meta, rt.dev, rt.db, rt.paths)
+        app = App(runtime.meta, runtime.dev, runtime.db, runtime.paths)
         evt_handler = CliEventHandler()
 
         for evt in app.run(commands):

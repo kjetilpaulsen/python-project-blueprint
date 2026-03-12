@@ -7,6 +7,8 @@ class ProjectIdentity:
     dist_name: str
     # This is the user-facing CLI/app identity
     app_name: str
+    # This is the package name
+    package_name: str
     # This is the logger namespace
     logger_name: str
 
@@ -14,5 +16,6 @@ class ProjectIdentity:
 IDENTITY = ProjectIdentity(
     dist_name="python-project-blueprint",
     app_name="python-project-blueprint",
+    package_name="python_project_blueprint",
     logger_name="python_project_blueprint",
 )

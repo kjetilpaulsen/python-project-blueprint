@@ -22,6 +22,8 @@ from python_project_blueprint.runtime.runtime import (
 )
 from python_project_blueprint.utils.paths.paths import ensure_dirs, ensure_optional_dirs, get_app_paths
 
+logger = logging.getLogger(__name__)
+
 def resolve_env_file() -> str | None:
     """
     Checks to see if we have .env file in cwd, and returns it if it exists. If
@@ -111,9 +113,10 @@ def read_metadata() -> MetaInfo:
         app_description=app_description)
 
 
-def build_runtime(rto: RuntimeOverrides) -> Runtime:
+def build_runtime(rto: RuntimeOverrides | None = None) -> Runtime:
     """
     """
+    logger.info("Building runtime ..")
     # Build Runtime dataclasses
     meta = read_metadata()
 
@@ -121,13 +124,13 @@ def build_runtime(rto: RuntimeOverrides) -> Runtime:
     paths = get_app_paths()
     ensure_dirs(paths)
 
-    # Resolve to build .conf file in XDG config directory.
-    if rto.build_config:
-        build_config_file(paths)
-
     #Override rule is: contex > env > .env > .conf > defaults
-    clean_rto = compact_context(asdict(rto))
+    clean_rto = compact_context(asdict(rto)) if rto is not None else {}
     settings = RuntimeSettings(**clean_rto)
+
+    # Resolve to build .conf file in XDG config directory.
+    if settings.build_config:
+        build_config_file(paths)
 
     # Build directories that are optional
     ensure_optional_dirs(paths, logs_dir=settings.file_log)
