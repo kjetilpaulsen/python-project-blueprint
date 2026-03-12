@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# FIX: change project name for imports
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.runtime import AppPaths
 
@@ -21,10 +22,13 @@ BUILD_CONFIG=false
 ###########
 
 # Level of general logging
-LOG_LEVEL=info
+LOG_LEVEL=debug
 
 # Level of logging that happens in console, CONSOLE_LOG must be true
 CONSOLE_LEVEL=info
+
+# Level og logging that happens to stderr, STDERR_LOG must be true
+STDERR_LEVEL=warning
 
 # Log to files, specified by XDG-paths
 FILE_LOG=false
@@ -33,7 +37,7 @@ FILE_LOG=false
 CONSOLE_LOG=false
 
 # Log to stderr
-STDERR_LOG=false
+STDERR_LOG=true
 
 ##################################
 # PostgreSQL connection settings #
@@ -57,14 +61,25 @@ DB_PORT=5432
 
 def build_config_file(paths: AppPaths) -> None:
     """
-    Builds the .conf file in the XDG resolved config directory. Take care that
-    if this file already exists, it will be overritten. Meaning this command 
-    can be called in order to reset a broken .conf file.
+    Create or overwrite the application's configuration file.
 
-    @Params
-    - paths: AppPaths
+    This function writes a default configuration template to the XDG
+    configuration directory resolved by `AppPaths`. If the configuration
+    file already exists, it will be overwritten. This allows the command
+    to be used to regenerate or reset a broken configuration file.
+
+    The configuration file is written using the application's package
+    name as the base filename.
+
+    Args:
+        paths: Application path container used to resolve the XDG
+            configuration directory where the configuration file
+            should be created.
+
+    Returns:
+        None
     """
-    config_path = paths.config_dir / f"{IDENTITY.logger_name}.conf"
+    config_path = paths.config_dir / f"{IDENTITY.package_name}.conf"
     config_path.parent.mkdir(parents=True, exist_ok=True)
 
     with config_path.open("w", encoding="utf-8") as f:

@@ -1,9 +1,9 @@
 from __future__ import annotations
 from collections.abc import Iterator, Sequence, Callable
 import logging
-from typing import Any
 
-from python_project_blueprint.commands.commands import Command, DisplayVersion
+# FIX: change project name for imports
+from python_project_blueprint.commands.commands import Command, CmdDisplayVersion
 from python_project_blueprint.events.events import Event
 from python_project_blueprint.handlers.displayversionhandler import DisplayVersionHandler
 from python_project_blueprint.runtime.runtime import AppPaths, CFGDataBase, CFGDev, MetaInfo
@@ -13,46 +13,92 @@ logger = logging.getLogger(__name__)
 
 class App:
     """
-    The back-engine of the program. Spawns and owns most services. Contains
-    the run(cmd) method that produces the results.
+    Core application engine responsible for executing commands.
+
+    The `App` class acts as the central coordinator for the application.
+    It owns the runtime configuration and services required to execute
+    commands and produce events.
+
+    Commands passed into the application are resolved to handler objects
+    which perform the actual work. Handlers emit `Event` objects that
+    describe progress, results, or errors. These events are yielded back
+    to the caller, allowing different frontends (CLI, API, etc.) to decide
+    how to present the results.
+
+    Attributes:
+        meta: Application metadata such as name, version, and description.
+        dev: Development-related runtime flags.
+        db: Database configuration.
+        paths: Resolved application filesystem paths.
     """
     def __init__(self, meta: MetaInfo, dev: CFGDev, db: CFGDataBase, paths: AppPaths) -> None:
-        logger.debug("Start ..")
+        """
+        Initialize the application runtime.
+
+        The constructor stores the runtime configuration and prepares any
+        services required by the application. Service initialization such
+        as database connections, caches, or external clients may also be
+        performed here.
+
+        Args:
+            meta: Application metadata.
+            dev: Development configuration flags.
+            db: Database configuration settings.
+            paths: Resolved filesystem paths used by the application.
+        """
+        logger.info("--INITIALIZING APP--")
         self.meta = meta
         self.dev = dev
         self.db = db
         self.paths = paths
 
+        # Create handlers
+        self._handlers: dict[type[Command], Callable] = {
+            CmdDisplayVersion: lambda cmd: DisplayVersionHandler(cmd, self.meta).handle(),
+        }
+
         # Start services..
 
     def run(self, cmds: Sequence[Command]) -> Iterator[Event]:
         """
-        The method takes in a sequence of commands, calls _handle_command for
-        each command, and then yields back Events produced by the command
+        Execute a sequence of commands and yield resulting events.
 
-        @Params
-        - cmds: Sequence[Command]
+        Each command is dispatched to its corresponding handler via
+        `_handle_command`. Handlers produce a stream of `Event` objects
+        describing the execution results.
 
-        @Returns
-        - yields Iterator[Event]
+        This generator-based design allows frontends to process events
+        incrementally instead of waiting for the entire command pipeline
+        to complete.
+
+        Args:
+            cmds: A sequence of command objects to execute.
+
+        Yields:
+            Event: Events produced during command execution.
         """
+        logger.debug("Starting run(cmd) ..")
         for cmd in cmds:
             yield from self._handle_command(cmd)
 
     def _handle_command(self, cmd: Command) -> Iterator[Event]:
         """
-        Checks which commands was given, and then calls the appropriate and 
-        corresponding classes.
+        Resolve and execute the handler corresponding to a command.
 
-        @Params
-        - cmd: Command
+        The method maps command types to their handler implementations.
+        If a matching handler exists, it is invoked and its resulting
+        event stream is yielded back to the caller.
 
-        @Returns
-        - yields Iterator[Event]
+        Args:
+            cmd: A command instance representing an application action.
+
+        Yields:
+            Event: Events produced by the command handler.
+
+        Raises:
+            ValueError: If no handler is registered for the given command
+                type.
         """
-        self._handlers: dict[type[Command], Callable] = {
-            DisplayVersion: lambda cmd: DisplayVersionHandler(cmd, self.meta).handle(),
-        }
         handler = self._handlers.get(type(cmd)) 
         if handler is None:
             raise ValueError(f"Command not found in _handlers: {type(cmd).__name__}")

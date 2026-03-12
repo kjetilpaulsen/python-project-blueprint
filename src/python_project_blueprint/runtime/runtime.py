@@ -31,11 +31,12 @@ class CFGDev:
 
 @dataclass(frozen=True)
 class CFGLogging:
-    log_level: int = logging.INFO
+    log_level: int = logging.DEBUG
     console_level: int = logging.INFO
+    stderr_level: int = logging.WARNING
     file_log: bool = False
     console_log: bool = False
-    stderr_log: bool = False
+    stderr_log: bool = True
 
 @dataclass(frozen=True)
 class CFGDataBase:

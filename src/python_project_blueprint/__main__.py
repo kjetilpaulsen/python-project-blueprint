@@ -1,7 +1,7 @@
-# FIX: Change imports from "python_project_blueprint" to packagename
 import logging
 import sys
 
+# FIX: change project name for imports
 from python_project_blueprint.entrypoints import cli_main, api_main
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.utils.logging.loggingsetup import setup_basic_logging
@@ -13,12 +13,11 @@ def main() -> int:
     Starts basic logging and decides between entrypoints.
     """
     setup_basic_logging()
-    logger = logging.getLogger(IDENTITY.logger_name)
-    logger.info("Basic logging started")
+    logger = logging.getLogger(__name__)
 
     argv = sys.argv[1:]
     if not argv:
-        logger.warning(f"Usage: {IDENTITY.package_name} [cli|api] ...")
+        logger.warning("Usage: %s [cli|api] ...", IDENTITY.package_name)
         return 2
     
     mode, *rest = argv
@@ -29,7 +28,7 @@ def main() -> int:
     if mode == "api":
         return api_main(rest)
 
-    logger.warning(f"Unknown entrypoint: {mode}")
+    logger.warning("Unknown entrypoint: %s", mode)
     return 2
 
 

@@ -1,55 +1,58 @@
-"""
-Creates baseline directories for data, state, cache, tmp and config. Docker
-overrides XDG values.
-
----To create more directories---
-
-AppPaths in runtime.py:
-    - Add @property
-ensure_dirs in paths.py:
-    - Add paths.*.mkdir()
-
-"""
-
 from __future__ import annotations
 
 import os
 from pathlib import Path
 
+# FIX: change project name for imports
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.runtime import AppPaths
 
 
 def _xdg_home(var: str, fallback: Path) -> Path:
     """
-    Creates a path from the env string
+    Resolve an XDG base directory from an environment variable.
 
-    @Params
-    - var: str : env string name
-    - fallback: Path : fallback path
+    The function checks whether the given environment variable is set
+    and non-empty. If so, the value is converted to a `Path` and used.
+    Otherwise, the provided fallback path is returned.
 
-    @Returns
-    - Path ( env if it exists, fallback if not)
+    Args:
+        var: Name of the environment variable representing an XDG
+            base directory (for example `XDG_DATA_HOME`).
+        fallback: Default path to use if the environment variable
+            is not set or empty.
+
+    Returns:
+        Path: The resolved path from the environment variable, or
+        the fallback path if the variable is not defined.
     """
     v = os.getenv(var)
     return Path(v) if v and v.strip() else fallback
 
 def get_app_paths() -> AppPaths:
     """
-    XDG-based paths.
+    Resolve application-specific filesystem paths following the XDG specification.
 
-    Local (default):
-        data: ~/.local/share/<app_name>
-        state: ~/.local/state/<app_name>
-        cache: ~/.cache/<app_name>
-        tmp: ~/.cache/<app_nam>/tmp
+    The function determines base directories using the XDG environment
+    variables if they are defined. Otherwise, standard fallback locations
+    under the user's home directory are used.
+
+    Default locations:
+
+        data:   ~/.local/share/<app_name>
+        state:  ~/.local/state/<app_name>
+        cache:  ~/.cache/<app_name>
+        tmp:    ~/.cache/<app_name>/tmp
         config: ~/.config/<app_name>
-    
-    Docker:
-        Sets XDG_*_HOME to /data, /state, /cache, /config -> /data/<app_name> ..
 
-    @Returns
-    - AppPaths : dataclass : containing the paths
+    In container environments (for example Docker), the XDG environment
+    variables may be mapped to container volumes such as `/data`, `/state`,
+    `/cache`, or `/config`. In that case the resulting directories become
+    `/data/<app_name>`, `/state/<app_name>`, etc.
+
+    Returns:
+        AppPaths: A dataclass containing the resolved application
+        directory paths.
     """
 
     home = Path.home()
@@ -71,10 +74,17 @@ def get_app_paths() -> AppPaths:
 
 def ensure_dirs(paths: AppPaths) -> None:
     """
-    Creates the default directories
+    Ensure that the application's core directories exist.
 
-    @Param
-    - paths: AppPaths
+    This function creates the standard XDG directories used by the
+    application if they do not already exist. Existing directories
+    are left unchanged.
+
+    Args:
+        paths: The resolved application path container.
+
+    Returns:
+        None
     """
     for p in (paths.data_dir, paths.state_dir, paths.cache_dir, paths.tmp_dir, paths.config_dir):
         p.mkdir(parents=True, exist_ok=True)
@@ -83,14 +93,18 @@ def ensure_optional_dirs(paths: AppPaths,
                 logs_dir: bool = False,
                 ) -> None:
     """
-    Creates extra directories if wanted and they don't already exist
+    Create optional application directories if enabled.
 
-    @Params
-    - paths: AppPaths
-    - *_dir: bool
+    Some directories are only required when specific runtime features
+    are enabled (for example file-based logging). This function creates
+    those directories when requested.
 
-    @Returns
-    - None
+    Args:
+        paths: The resolved application path container.
+        logs_dir: If `True`, ensure that the log directory exists.
+
+    Returns:
+        None
     """
     if logs_dir:
         paths.logs_dir.mkdir(parents=True, exist_ok = True)

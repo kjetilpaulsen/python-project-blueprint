@@ -7,6 +7,7 @@ class RuntimeOverrides:
     build_config: bool | None = None
     log_level: str | int | None = None
     console_level: str | int | None = None
+    stderr_level: str | int | None = None
     file_log: bool | None = None
     console_log: bool | None = None
     stderr_log: bool | None = None

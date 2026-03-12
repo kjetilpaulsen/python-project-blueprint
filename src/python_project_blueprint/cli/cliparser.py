@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import logging
 
+# FIX: change project name for imports
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.parsedinput import FrontendCommandInput, CliParsedInput, RuntimeOverrides
 
@@ -10,11 +11,38 @@ logger = logging.getLogger(__name__)
 
 def cli_parser(argv: list[str] | None = None) -> CliParsedInput:
     """
-    Resolves argv and returns the arguments passed as a dict
+    Parse CLI arguments and convert them into structured runtime inputs.
 
-    To add more args:
-    - parser.add_argument()
-    - Add to return dict
+    This function resolves command-line arguments using `argparse` and
+    converts them into two structured components used by the application:
+
+        1. `RuntimeOverrides` – optional runtime configuration overrides
+           supplied by the CLI.
+        2. `FrontendCommandInput` objects – normalized representations of
+           commands requested by the user.
+
+    The parser defines both global runtime flags (for configuration such
+    as logging or database settings) and command-specific options using
+    subparsers.
+
+    To add a new CLI command:
+
+        1. Define a new subparser using `parser.add_subparsers()`.
+        2. Add command-specific arguments to that subparser.
+        3. Convert the parsed arguments into a `FrontendCommandInput`
+           instance in the command resolution section.
+
+    Args:
+        argv: Optional list of CLI arguments. If `None`, `argparse`
+            reads arguments from `sys.argv`. Passing an explicit list
+            is primarily useful for testing or programmatic invocation.
+
+    Returns:
+        CliParsedInput: A structured container containing:
+
+            - `overrides`: Runtime configuration overrides provided via CLI.
+            - `commands`: A tuple of normalized frontend command inputs
+              representing the requested CLI commands.
     """
 
     logger.info("Parsing argv ..")
@@ -27,6 +55,7 @@ def cli_parser(argv: list[str] | None = None) -> CliParsedInput:
 
     parser.add_argument("--log-level", type=str, default=None, help="Set the general logging level for the app")
     parser.add_argument("--console-level", type=str, default=None, help="Set the logging level consolelogging")
+    parser.add_argument("--stderr-level", type=str, default=None, help="Set the logging level stderrlogging")
     parser.add_argument("--file-log", action=argparse.BooleanOptionalAction, default=None, help="Enable logging to files")
     parser.add_argument("--console-log", action=argparse.BooleanOptionalAction, default=None, help="Enable logging to console")
     parser.add_argument("--stderr-log", action=argparse.BooleanOptionalAction, default=None, help="Enable logging to stder")
@@ -54,6 +83,7 @@ def cli_parser(argv: list[str] | None = None) -> CliParsedInput:
         build_config=args.build_config,
         log_level=args.log_level,
         console_level=args.console_level,
+        stderr_level=args.stderr_level,
         file_log=args.file_log,
         console_log=args.console_log,
         stderr_log=args.stderr_log,

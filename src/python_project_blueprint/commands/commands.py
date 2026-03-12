@@ -6,5 +6,5 @@ class Command:
     """
 
 @dataclass(frozen=True)
-class DisplayVersion(Command):
+class CmdDisplayVersion(Command):
     uppercase: bool = False

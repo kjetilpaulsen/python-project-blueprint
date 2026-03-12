@@ -1,8 +1,9 @@
 from __future__ import annotations
 import logging
-from typing import Any, Iterator
+from typing import Iterator
 
-from python_project_blueprint.commands.commands import Command
+# FIX: change project name for imports
+from python_project_blueprint.commands.commands import CmdDisplayVersion
 from python_project_blueprint.events.events import Event, EvtResult
 from python_project_blueprint.handlers.commandhandler import CommandHandler
 from python_project_blueprint.runtime.runtime import MetaInfo
@@ -10,44 +11,66 @@ from python_project_blueprint.runtime.runtime import MetaInfo
 logger = logging.getLogger(__name__)
 
 class DisplayVersionHandler(CommandHandler):
-    def __init__(self, cmd: Command, meta: MetaInfo):
+    """
+    Command handler responsible for executing the `CmdDisplayVersion` command.
+
+    Handlers encapsulate the execution logic for a specific command type.
+    Each handler receives the command instance together with the runtime
+    dependencies it requires and produces a stream of `Event` objects
+    describing the execution result.
+
+    This handler resolves and returns the application's current version.
+    """
+    def __init__(self, cmd: CmdDisplayVersion, meta: MetaInfo):
         self.cmd = cmd
         self.meta = meta
 
     def handle(self) -> Iterator[Event]:
         """
-        Similar entrypoint for every handler. This method starts the 
-        computations. And it yields back different events based on the type of 
-        Command it corresponds to. This docstring is a generic string for all 
-        handler.handle() commands.
+        Execute the command and produce events describing the result.
 
-        This method simply calls yield from some relevant method. The relevant
-        methods can produce Events in the following manner:
+        This method acts as the standard entrypoint for all command
+        handlers. It coordinates the execution flow and delegates the
+        actual work to helper methods that produce events.
 
-        Produce e.g. EvtResult:
-        yield EvtResult()
+        Handlers emit events using Python generators. This allows the
+        application to stream progress updates, intermediate results,
+        and final outputs to the frontend.
 
-        Progress events followed by e.g. EvtResult:
-        total = x
-        for i in range(x):
-            yield EvtProgress()
-        yield EvtResult()
+        Examples of typical event patterns:
 
-        @Returns
-        - yields Events
+            Producing a single result:
+
+                yield EvtResult(...)
+
+            Producing progress updates followed by a result:
+
+                for i in range(total):
+                    yield EvtProgress(...)
+                yield EvtResult(...)
+
+        Returns:
+            Iterator[Event]: A generator yielding events produced during
+            command execution.
         """
+        logger.info("Handling CmdDisplayVersion ..")
         yield from self.display_version()
 
     def display_version(self) -> Iterator[Event]:
         """
-        Produces an EvtResult containing the current version of the program.
+        Generate an event containing the application's current version.
 
-        @Returns
-        - yields EvtResult
+        The version is retrieved from the application metadata and may
+        optionally be transformed depending on the command options.
+
+        Returns:
+            Iterator[Event]: A generator yielding a single `EvtResult`
+            event containing the resolved version string.
         """
         version = f"v{self.meta.app_version}"
         if self.cmd.uppercase:
             version = version.upper()
+        logger.debug("Yielding EvtResult ..")
         yield EvtResult(
             command_name="DisplayVersion",
             payload={"version": version},

@@ -2,13 +2,46 @@ import sys
 
 import uvicorn
 
+# FIX: change project name for imports
 from python_project_blueprint.cli.cli import cli
 from python_project_blueprint.identity import IDENTITY
 
 def cli_main(argv: list[str]) -> int:
+    """
+    Execute the CLI entrypoint.
+
+    This function acts as a thin wrapper around the main CLI implementation,
+    allowing the top-level application entrypoint to delegate execution based
+    on the selected frontend mode.
+
+    Args:
+        argv: Command-line arguments passed to the CLI.
+
+    Returns:
+        int: Exit code returned by the CLI execution.
+    """
     return cli(argv)
 
 def api_main(argv: list[str]) -> int:
+    """
+    Start the API server using Uvicorn.
+
+    This function parses a small set of API-specific command-line arguments
+    and launches the FastAPI application through the Uvicorn ASGI server.
+
+    Supported arguments include:
+
+        --host   Set the bind address for the API server.
+        --port   Set the listening port for the API server.
+        --reload Enable automatic server reload for development.
+
+    Args:
+        argv: Command-line arguments passed to the API entrypoint.
+
+    Returns:
+        int: Exit code. Returns `0` if the server was started successfully,
+        or `2` if invalid arguments were supplied.
+    """
     host = "127.0.0.1"
     port = 8001
     reload = False
