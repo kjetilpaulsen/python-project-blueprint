@@ -74,6 +74,7 @@ def build_runtime(rto: RuntimeOverrides | None = None) -> Runtime:
     log = CFGLogging(
         log_level = settings.log_level,
         console_level = settings.console_level,
+        stderr_level = settings.stderr_level,
         file_log = settings.file_log,
         console_log = settings.console_log,
         stderr_log = settings.stderr_log,
