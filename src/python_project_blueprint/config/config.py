@@ -8,54 +8,40 @@ CONFIG_TEMPLATE = """########
 # Misc #
 ########
 
-# Enable developer conviniences
+APP_NAME=python-project-blueprint
+PACKAGE_NAME=python_project_blueprint
+
 DEV_MODE=false
-
-# Run without writing to DB
 DRY_RUN=false
-
-# Build new version of config file at XDG-Config path, overrites current file
 BUILD_CONFIG=false
 
 ###########
 # Logging #
 ###########
 
-# Level of general logging
 LOG_LEVEL=debug
-
-# Level of logging that happens in console, CONSOLE_LOG must be true
 CONSOLE_LEVEL=info
-
-# Level og logging that happens to stderr, STDERR_LOG must be true
 STDERR_LEVEL=warning
-
-# Log to files, specified by XDG-paths
-FILE_LOG=false
-
-# Log to console
+FILE_LOG=true
 CONSOLE_LOG=false
-
-# Log to stderr
 STDERR_LOG=true
 
-##################################
-# PostgreSQL connection settings #
-##################################
+############################################
+# PostgreSQL connection settings for Local #
+############################################
 
-# Leave empty for local socket connection
-DB_HOST=
+# Local development with peer auth
+# DB_HOST=
+# DB_NAME=python_project_blueprint
+# DB_USER=
+# DB_PASSWORD=
+# DB_PORT=5432
 
-# Default suggestion: use the application name
-DB_NAME=
-
-# Leave empty to use system user
-DB_USER=
-
-# Leave password empty for peer/local auth
-DB_PASSWORD=
-
-# Default port
+# Docker Compose
+DB_HOST=postgres
+DB_NAME=python_project_blueprint
+DB_USER=python_project_blueprint
+DB_PASSWORD=replace-me-with-an-actual-password
 DB_PORT=5432
 """
 

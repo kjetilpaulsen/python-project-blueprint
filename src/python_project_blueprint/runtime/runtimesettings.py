@@ -8,7 +8,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.utils.paths.paths import get_app_paths
 
-logging
 class RuntimeSettings(BaseSettings):
     """
     Application runtime settings resolved from overrides, environment

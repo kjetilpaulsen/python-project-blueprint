@@ -43,7 +43,7 @@ def api_main(argv: list[str]) -> int:
         or `2` if invalid arguments were supplied.
     """
     host = "127.0.0.1"
-    port = 8001
+    port = 8010
     reload = False
 
     i = 0

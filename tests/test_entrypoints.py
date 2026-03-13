@@ -39,7 +39,7 @@ def test_api_main_uses_defaults(monkeypatch):
     assert captured == {
         "app_path": f"{entrypoints.IDENTITY.package_name}.api.api:api",
         "host": "127.0.0.1",
-        "port": 8001,
+        "port": 8010,
         "reload": False,
     }
 
