@@ -97,7 +97,7 @@ def _configure_logging(appname: str,
         root_logger.addHandler(console_handler)
     return None
 
-def logging_setup(appname: str, paths: AppPaths, log: CFGLogging) -> None:
+def setup_logging(appname: str, paths: AppPaths, log: CFGLogging) -> None:
     """
     CLI-style logging setup: always rebuild the process logging config.
     """
@@ -106,7 +106,7 @@ def logging_setup(appname: str, paths: AppPaths, log: CFGLogging) -> None:
     _configure_logging(appname, paths, log)
     _LOGGING_INITIALIZED = True
 
-def ensure_logging_setup(appname: str, paths: AppPaths, log: CFGLogging) -> None:
+def ensure_setup_logging(appname: str, paths: AppPaths, log: CFGLogging) -> None:
     """
     API-style logging setup: configure it once per process.
     """

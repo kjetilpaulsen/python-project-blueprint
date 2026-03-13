@@ -4,12 +4,14 @@ import argparse
 import logging
 
 # FIX: change project name for imports
+from python_project_blueprint.commands.frontendcommandinput import FrontendCommandInput
+from python_project_blueprint.runtime.runtimeoverrides import RuntimeOverrides
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.runtime.parsedinput import FrontendCommandInput, CliParsedInput, RuntimeOverrides
+
 
 logger = logging.getLogger(__name__)
 
-def cli_parser(argv: list[str] | None = None) -> CliParsedInput:
+def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInput, ...], RuntimeOverrides]:
     """
     Parse CLI arguments and convert them into structured runtime inputs.
 
@@ -104,7 +106,4 @@ def cli_parser(argv: list[str] | None = None) -> CliParsedInput:
                 },
             )
         )
-    return CliParsedInput(
-        overrides=overrides,
-        commands=tuple(commands),
-    )
+    return (tuple(commands), overrides)

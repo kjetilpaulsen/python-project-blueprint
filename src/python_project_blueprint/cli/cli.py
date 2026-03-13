@@ -6,7 +6,7 @@ import logging
 from python_project_blueprint.cli.clieventhandler import CliEventHandler
 from python_project_blueprint.commands.buildcommands import build_commands
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.utils.logging.loggingsetup import logging_setup
+from python_project_blueprint.utils.logging.setuplogging import setup_logging
 from python_project_blueprint.runtime.buildruntime import build_runtime
 from python_project_blueprint.cli.cliparser import cli_parser
 from python_project_blueprint.app import App
@@ -44,12 +44,12 @@ def cli(argv: list[str] | None = None) -> int:
     """
     logger.info("--STARTING CLI--")
     try:
-        parsed_input = cli_parser(argv)
+        frontendinputcommands, overrides= cli_parser(argv)
 
-        commands = build_commands(parsed_input.commands)
-        runtime = build_runtime(parsed_input.overrides)
+        commands = build_commands(frontendinputcommands)
+        runtime = build_runtime(overrides)
 
-        logging_setup(IDENTITY.logger_name,
+        setup_logging(IDENTITY.logger_name,
                       runtime.paths,
                       runtime.log)
         log_runtime(runtime)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from importlib import metadata
+from typing import Any
 
 # FIX: change project name for imports
 from python_project_blueprint.identity import IDENTITY
@@ -53,3 +54,16 @@ def resolve_version() -> str:
         return metadata.version(IDENTITY.dist_name)
     except metadata.PackageNotFoundError:
         return "Cannot resolve version"
+
+def compact_dict(context: dict[str, Any]) -> dict[str, Any]:
+    """
+    Remove keys whose values that are `None`.
+
+    Args:
+        context: A mapping of keys to values.
+
+    Returns:
+        dict[str, Any]: A new dictionary containing only keys whose values
+        are not `None`.
+    """
+    return {k: v for k, v in context.items() if v is not None}

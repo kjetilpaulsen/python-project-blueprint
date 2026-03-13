@@ -4,7 +4,7 @@ from typing import Callable
 
 # FIX: change project name for imports
 from python_project_blueprint.commands.commands import Command, CmdDisplayVersion
-from python_project_blueprint.runtime.parsedinput import FrontendCommandInput
+from python_project_blueprint.commands.frontendcommandinput import FrontendCommandInput
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ import sys
 # FIX: change project name for imports
 from python_project_blueprint.entrypoints import cli_main, api_main
 from python_project_blueprint.identity import IDENTITY
-from python_project_blueprint.utils.logging.loggingsetup import setup_basic_logging
+from python_project_blueprint.utils.logging.setuplogging import setup_basic_logging
 
 
 

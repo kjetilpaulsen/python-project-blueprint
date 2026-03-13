@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class RuntimeOverrides:
@@ -16,16 +16,3 @@ class RuntimeOverrides:
     db_user: str | None = None
     db_password: str | None = None
     db_port: int | None = None
-
-@dataclass(frozen=True)
-class FrontendCommandInput:
-    name: str
-    options: dict[str, object] = field(default_factory=dict)
-
-@dataclass(frozen=True)
-class CliParsedInput:
-    overrides: RuntimeOverrides
-    commands: tuple[
-        FrontendCommandInput,
-        ...
-    ]

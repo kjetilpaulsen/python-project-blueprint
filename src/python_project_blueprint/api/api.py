@@ -12,10 +12,10 @@ from python_project_blueprint.app import App
 from python_project_blueprint.commands.buildcommands import build_commands
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.buildruntime import build_runtime
-from python_project_blueprint.runtime.parsedinput import FrontendCommandInput 
+from python_project_blueprint.commands.frontendcommandinput import FrontendCommandInput 
 from python_project_blueprint.events.events import Event, EvtLog, EvtProgress, EvtError, EvtResult
 from python_project_blueprint.runtime.runtime import Runtime
-from python_project_blueprint.utils.logging.loggingsetup import ensure_logging_setup
+from python_project_blueprint.utils.logging.setuplogging import ensure_setup_logging
 from python_project_blueprint.utils.utils import resolve_version
 from python_project_blueprint.runtime.logruntime import log_runtime
 
@@ -172,7 +172,7 @@ async def lifespan(_: FastAPI):
 
     _RUNTIME = build_runtime()
 
-    ensure_logging_setup(
+    ensure_setup_logging(
         IDENTITY.logger_name,
         _RUNTIME.paths,
         _RUNTIME.log,
