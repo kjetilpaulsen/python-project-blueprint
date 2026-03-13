@@ -43,6 +43,16 @@ DB_NAME=python_project_blueprint
 DB_USER=python_project_blueprint
 DB_PASSWORD=replace-me-with-an-actual-password
 DB_PORT=5432
+HOST_UID=1000
+HOST_GID=1000
+################################################
+# Docker user, docker repo and docker filename #
+################################################
+
+# Consider updating this on GitHub Actions aswell
+DOCKER_USER=set-user-here
+DOCKER_REPO=set-repo-here
+DOCKER_TAG=set-tag-here
 """
 
 def build_config_file(paths: AppPaths) -> None:

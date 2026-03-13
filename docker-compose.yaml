@@ -3,10 +3,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kjetilpaulsen/images:python-project-blueprint-latest
-    container_name: python-project-blueprint-api
     env_file:
       - .env
+    image: ${DOCKER_USER}/${DOCKER_REPO}:${DOCKER_TAG}
+    container_name: ${APP_NAME}
     user: "${HOST_UID}:${HOST_GID}"
     restart: unless-stopped
     depends_on:
@@ -45,7 +45,7 @@ services:
 
   postgres:
     image: postgres:17
-    container_name: python-project-blueprint-postgres
+    container_name: ${APP_NAME}-postgres
     restart: unless-stopped
     env_file:
       - .env
