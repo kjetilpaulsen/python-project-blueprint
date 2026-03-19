@@ -41,7 +41,7 @@ class CFGLogging:
 @dataclass(frozen=True)
 class CFGDataBase:
     db_host: str | None = None
-    db_dbname: str | None = None
+    db_name: str | None = None
     db_user: str | None = None
     db_password: str | None = None
     db_port: int | None = None

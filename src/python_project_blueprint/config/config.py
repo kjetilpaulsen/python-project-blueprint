@@ -38,7 +38,7 @@ STDERR_LOG=true
 # DB_PORT=5432
 
 # Docker Compose
-DB_HOST=postgres
+DB_HOST=/run/postgresql
 DB_NAME=python_project_blueprint
 DB_USER=python_project_blueprint
 DB_PASSWORD=replace-me-with-an-actual-password

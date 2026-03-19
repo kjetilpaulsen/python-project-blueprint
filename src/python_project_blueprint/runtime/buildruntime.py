@@ -82,7 +82,7 @@ def build_runtime(rto: RuntimeOverrides | None = None) -> Runtime:
 
     db = CFGDataBase(
         db_host = settings.db_host or "/run/postgresql",
-        db_dbname = settings.db_name or meta.app_name.replace("-","_"),
+        db_name = settings.db_name or meta.app_name.replace("-","_"),
         db_user = settings.db_user,
         db_password = settings.db_password,
         db_port = settings.db_port or 5432,
