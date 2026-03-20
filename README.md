@@ -1,7 +1,7 @@
 
 # python-project-blueprint
 
-This repo was originally intended to be kept privat, so I am in the process of rewriting this README.md
+This repo was originally intended to be kept privat, so I am in the process of rewriting this README.md. The README.md should be updated by March 23, 2026.
 
 A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. 
 
