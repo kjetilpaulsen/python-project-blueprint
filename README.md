@@ -2,7 +2,7 @@
 
 This repo was originally intended to be kept privat, so I am in the process of rewriting this README.md. The README.md should be updated by March 23, 2026.
 
-A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. 
+A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. Remember to search and replace through the files for ```python-project-blueprint``` for app name, and ```python_project_blueprint``` for package name.
 
 ## Features
 - Two Entrypoints, CLI & FastAPI
@@ -78,3 +78,67 @@ or with coverage:
 ```
 uv run pytest -V --cov=python_project_blueprint --cov-report=term-missing
 ```
+
+## Docker & GitHub Actions Setup
+
+### Overview
+
+- **Docker**: Used to build and run the API locally
+- **Docker Compose**: Runs the API container (no database required)
+- **GitHub Actions**: Runs tests and builds/pushes Docker images on `release` branch
+
+---
+
+## Local Docker Usage
+
+### 1. Create `.env`
+
+```env
+IMAGE_NAME=<your-dockerhub-username>/<your-image-name>
+IMAGE_TAG=latest
+
+# App settings (optional)
+LOG_LEVEL=DEBUG
+CONSOLE_LOG=true
+STDERR_LOG=true
+```
+### 2. Build, run and test the image and container
+Build the image and run the container:
+```
+docker compose up --build
+```
+And stop it like so:
+```
+docker compose down
+```
+Test the API entrypoint while running the container like so:
+```
+curl http://127.0.0.1:8010/health
+```
+
+## Github Actions usage
+
+### 1. Setup secrets in your repo
+Navigate to secrets:
+```
+GitHub → Repo → Settings → Secrets and variables → Actions
+```
+Add the following as separate secrets:
+```
+DOCKERHUB_USERNAME=<your-dockerhub-username>
+```
+```
+DOCKERHUB_TOKEN=<your-dockerhub-access-token>
+```
+```
+IMAGE_NAME=<your-dockerhub-username>/<your-image-name>
+```
+```
+IMAGE_TAG_LATEST=<most-likely-package-name>
+```
+```
+PREFIX_SHA=<most-likely-package-name>
+```
+
+On push to ```release```-branch GitHub Actions will install Python + uv, run tests with pytest, build the docker image and push it to dockerhub.
+
