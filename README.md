@@ -5,13 +5,19 @@ This repo was originally intended to be kept privat, so I am in the process of r
 A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. Remember to search and replace through the files for ```python-project-blueprint``` for app name, and ```python_project_blueprint``` for package name.
 
 ## Features
-- Two Entrypoints, CLI & FastAPI
-- XDG folder structure for logs, config, data, cache/tmp
-- Different logging-setups can be specified(file, console, stderr)
-- Command/Event architecture to handle instructions and results
-- Includes testing for the initial blueprints
-- Includes dockerfile and docker-compose
-- Includes a workflow that run tests, build docker image and publishes to dockerhub if pushed to a release-branch
+
+- Dual entrypoints: CLI and FastAPI (HTTP API)
+- Command → Handler → Event pipeline for decoupled execution and output
+- Unified application core reused across CLI and API frontends
+- Structured runtime configuration (overrides → env → config → defaults)
+- XDG-compliant directory layout (data, config, state, cache, tmp, logs)
+- Flexible logging system (file, console, stderr with configurable levels)
+- Pydantic-based settings management with validation
+- Typed command and event system for predictable flow and extensibility
+- Test suite for core components (pytest + coverage support)
+- Docker support (Dockerfile + docker-compose for local execution)
+- CI/CD pipeline (GitHub Actions: test → build → push Docker image)
+- Designed for extensibility (easy to add new commands, handlers, frontends)
 
 ## Installation
 
