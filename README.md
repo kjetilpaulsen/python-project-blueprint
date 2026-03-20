@@ -17,9 +17,29 @@ A blueprint for creating python projects. Copy the contents of this repo into a 
 
 ### Requirements
 - Python >= 3.x
+- uv
 
 ### Setup
 ```bash
 git clone https://github.com/kjetilpaulsen/python-project-blueprint.git
 cd python-project-blueprint
+uv sync
+```
+
+This will install the project in the folder. You now have several options for how to run the app. Since this is a foundation for other projects, it only has one command, ```version```, with one optional command ```--uppercase```. It will return an event that contains the version of the app and the "v" infront of the version is either uppercase or lowercase.
+
+To test in CLI mode:
+```
+uv run python -m python_project_blueprint cli version
+```
+
+To test in API mode:
+```
+uv run python -m python_project_blueprint api version
+```
+
+To see the list of available commands:
+
+```
+uv run python -m python_project_blueprint cli -h
 ```
