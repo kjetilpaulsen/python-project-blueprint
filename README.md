@@ -22,9 +22,6 @@ A blueprint for creating python projects. Copy the contents of this repo into a 
 
 ### Setup
 ```bash
-git clone https://github.com/yourname/project.git
-cd project
-python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-.venv\Scripts\activate     # Windows
-pip install -r requirements.txt
+git clone https://github.com/kjetilpaulsen/python-project-blueprint.git
+cd python-project-blueprint
+```
