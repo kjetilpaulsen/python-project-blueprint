@@ -25,8 +25,16 @@ git clone https://github.com/kjetilpaulsen/python-project-blueprint.git
 cd python-project-blueprint
 uv sync
 ```
+*Optionally you can activate the virtual environment:*
+```
+source .venv/bin/activate
+```
+To see the list of available commands:
 
-This will install the project in the folder. You now have several options for how to run the app. Since this is a foundation for other projects, it only has one command, ```version```, with one optional command ```--uppercase```. It will return an event that contains the version of the app and the "v" infront of the version is either uppercase or lowercase.
+```
+uv run python -m python_project_blueprint cli -h
+```
+You now have a couple of options for how to run the app. Since this is a foundation for other projects, it only has one command, ```version```, with one optional command ```--uppercase```. It will return an event that contains the version of the app and the "v" infront of the version is either uppercase or lowercase.
 
 To test in CLI mode:
 ```
@@ -35,11 +43,26 @@ uv run python -m python_project_blueprint cli version
 
 To test in API mode:
 ```
-uv run python -m python_project_blueprint api version
+uv run python -m python_project_blueprint api
 ```
-
-To see the list of available commands:
-
+Or with spesific host, port and reload:
 ```
-uv run python -m python_project_blueprint cli -h
+uv run python -m python_project_blueprint api \
+  --host 127.0.0.1 \
+  --port 8001 \
+  --reload
+```
+This can then be tested with curl like so:
+```
+curl http://127.0.0.1:8001/health
+```
+And the ```version``` can be tested by running the command:
+```
+curl -X POST http://127.0.0.1:8001/run \
+  -H "Content-Type: application/json" \
+  -d '{
+    "commands": [
+      { "name": "version", "options": {} }
+    ]
+  }'
 ```
