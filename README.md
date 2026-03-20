@@ -16,8 +16,8 @@ A blueprint for creating python projects. Copy the contents of this repo into a 
 ## Installation
 
 ### Requirements
-- Python >= 3.x
-- uv
+- **Python** ≥ 3.11 (recommended: 3.12–3.14)
+- **uv** (for dependency and environment management)
 
 ### Setup
 ```bash
@@ -65,4 +65,16 @@ curl -X POST http://127.0.0.1:8001/run \
       { "name": "version", "options": {} }
     ]
   }'
+```
+If you want the app to build a config file in ```~/.config/python-project-blueprint/python_project_blueprint.conf```:
+```
+uv run python -m python_project_blueprint cli --build-config
+```
+The app also supports testing with pytest:
+```
+uv run pytest
+```
+or with coverage:
+```
+uv run pytest -V --cov=python_project_blueprint --cov-report=term-missing
 ```
