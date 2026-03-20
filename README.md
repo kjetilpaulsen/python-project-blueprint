@@ -1,10 +1,10 @@
 # python-project-blueprint
 
+### Description
+
 A modular Python project template for building CLI and API applications with a shared core, structured runtime configuration, and production-ready tooling (logging, testing, Docker, CI/CD).
 
----
-
-## What this is
+### What this is
 
 This repository is a **starting point**, not a finished application.
 
@@ -13,7 +13,6 @@ It provides:
 - A unified backend usable from both CLI and HTTP API
 - A production-ready foundation (logging, config, Docker, CI)
 
----
 ## Table of contents:
  - Quick start
  - Features
@@ -52,6 +51,7 @@ uv run python -m python_project_blueprint cli version
 - Designed for extensibility (easy to add new commands, handlers, frontends)
 
 ## Architecture
+- To come
 
 ## Installation
 
