@@ -60,45 +60,45 @@ uv run python -m python_project_blueprint cli version
 - **uv** (for dependency and environment management)
 
 ### Setup
-```
+```bash
 git clone https://github.com/kjetilpaulsen/python-project-blueprint.git
 cd python-project-blueprint
 uv sync
 ```
 *Optionally you can activate the virtual environment:*
-```
+```bash
 source .venv/bin/activate
 ```
 ### Usage
 To see the list of available commands:
 
-```
+```bash
 uv run python -m python_project_blueprint cli -h
 ```
 You now have a couple of options for how to run the app. Since this is a foundation for other projects, it only has one command, ```version```, with one optional command ```--uppercase```. It will return an event that contains the version of the app and the "v" infront of the version is either uppercase or lowercase.
 
 To test in CLI mode:
-```
+```bash
 uv run python -m python_project_blueprint cli version
 ```
 
 To test in API mode:
-```
+```bash
 uv run python -m python_project_blueprint api
 ```
 Or with spesific host, port and reload:
-```
+```bash
 uv run python -m python_project_blueprint api \
   --host 127.0.0.1 \
   --port 8001 \
   --reload
 ```
 This can then be tested with curl like so:
-```
+```bash
 curl http://127.0.0.1:8001/health
 ```
 And the ```version``` can be tested by running the command:
-```
+```bash
 curl -X POST http://127.0.0.1:8001/run \
   -H "Content-Type: application/json" \
   -d '{
@@ -108,16 +108,16 @@ curl -X POST http://127.0.0.1:8001/run \
   }'
 ```
 If you want the app to build a config file in ```~/.config/python-project-blueprint/python_project_blueprint.conf```:
-```
+```bash
 uv run python -m python_project_blueprint cli --build-config
 ```
 ### Testing
 The app also supports testing with pytest:
-```
+```bash
 uv run pytest
 ```
 or with coverage:
-```
+```bash
 uv run pytest -V --cov=python_project_blueprint --cov-report=term-missing
 ```
 
@@ -144,15 +144,15 @@ STDERR_LOG=true
 ```
 ### 2. Build, run and test the image and container
 Build the image and run the container:
-```
+```bash
 docker compose up --build
 ```
 And stop it like so:
-```
+```bash
 docker compose down
 ```
 Test the API entrypoint while running the container like so:
-```
+```bash
 curl http://127.0.0.1:8010/health
 ```
 
@@ -160,23 +160,23 @@ curl http://127.0.0.1:8010/health
 
 ### 1. Setup secrets in your repo
 Navigate to secrets:
-```
+```bash
 GitHub → Repo → Settings → Secrets and variables → Actions
 ```
 Add the following as separate secrets:
-```
+```env
 DOCKERHUB_USERNAME=<your-dockerhub-username>
 ```
-```
+```env
 DOCKERHUB_TOKEN=<your-dockerhub-access-token>
 ```
-```
+```env
 IMAGE_NAME=<your-dockerhub-username>/<your-image-name>
 ```
-```
+```env
 IMAGE_TAG_LATEST=<most-likely-package-name>
 ```
-```
+```env
 PREFIX_SHA=<most-likely-package-name>
 ```
 
