@@ -1,1 +1,30 @@
-### Python project blueprint
+
+# python-project-blueprint
+
+This repo was originally intended to be kept privat, so I am in the process of rewriting this README.md
+
+A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. 
+
+## Features
+- Key capability 1
+- Two Entrypoints, CLI & FastAPI
+- XDG folder structure for logs, config, data, cache/tmp
+- Different logging-setups can be specified(file, console, stderr)
+- Command/Event architecture to handle instructions and results
+- Includes testing for the initial blueprints
+- Includes dockerfile and docker-compose
+- Includes a workflow that run tests, build docker image and publishes to dockerhub if pushed to a release-branch
+
+## Installation
+
+### Requirements
+- Python >= 3.x
+
+### Setup
+```bash
+git clone https://github.com/yourname/project.git
+cd project
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+.venv\Scripts\activate     # Windows
+pip install -r requirements.txt
