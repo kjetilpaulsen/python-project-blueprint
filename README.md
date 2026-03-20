@@ -1,4 +1,3 @@
-
 # python-project-blueprint
 
 This repo was originally intended to be kept privat, so I am in the process of rewriting this README.md. The README.md should be updated by March 23, 2026.
@@ -6,7 +5,6 @@ This repo was originally intended to be kept privat, so I am in the process of r
 A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. 
 
 ## Features
-- Key capability 1
 - Two Entrypoints, CLI & FastAPI
 - XDG folder structure for logs, config, data, cache/tmp
 - Different logging-setups can be specified(file, console, stderr)
