@@ -1,0 +1,14 @@
+@startuml
+title Command Execution Flow
+
+actor User
+
+User -> CLI : run command
+CLI -> CommandBuilder : parse input
+CommandBuilder -> App : build commands
+App -> Handler : dispatch command
+Handler -> App : emit events
+App -> CLI : stream events
+CLI -> User : display output
+
+@enduml

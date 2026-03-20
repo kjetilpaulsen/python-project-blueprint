@@ -51,7 +51,12 @@ uv run python -m python_project_blueprint cli version
 - Designed for extensibility (easy to add new commands, handlers, frontends)
 
 ## Architecture
-- To come
+
+### Architecture
+[Architecture](docs/architecture.md)
+
+### Flow
+[Flow](docs/flow.md)
 
 ## Installation
 

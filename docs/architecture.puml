@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+title High-Level Architecture
+
+package "Entrypoints" {
+  [CLI]
+  [FastAPI]
+}
+
+package "Command Layer" {
+  [Command Builder]
+  [Command]
+}
+
+package "Core" {
+  [App]
+}
+
+package "Execution" {
+  [Handler]
+  [Event]
+}
+
+CLI --> "Command Builder"
+FastAPI --> "Command Builder"
+
+"Command Builder" --> Command
+Command --> App
+
+App --> Handler
+Handler --> Event
+
+Event --> CLI
+Event --> FastAPI
+
+@enduml

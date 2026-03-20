@@ -1,0 +1,9 @@
+@startuml
+actor Client
+Client -> FastAPI : POST /run
+FastAPI -> App : run(commands)
+App -> Handler : execute
+Handler -> App : events
+App -> FastAPI : events
+FastAPI -> Client : JSON response
+@enduml
