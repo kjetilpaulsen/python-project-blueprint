@@ -1,8 +1,40 @@
 # python-project-blueprint
 
-This repo was originally intended to be kept privat, so I am in the process of rewriting this README.md. The README.md should be updated by March 23, 2026.
+A modular Python project template for building CLI and API applications with a shared core, structured runtime configuration, and production-ready tooling (logging, testing, Docker, CI/CD).
 
-A blueprint for creating python projects. Copy the contents of this repo into a new python project, and use this as a starting point for your project. Remember to search and replace through the files for ```python-project-blueprint``` for app name, and ```python_project_blueprint``` for package name.
+---
+
+## What this is
+
+This repository is a **starting point**, not a finished application.
+
+It provides:
+- A clean architecture for command-driven applications
+- A unified backend usable from both CLI and HTTP API
+- A production-ready foundation (logging, config, Docker, CI)
+
+---
+## Table of contents:
+ - Quick start
+ - Features
+ - Architecture
+ - Installation
+   - Requirements
+   - Setup
+   - Usage
+   - Testing
+ - Docker & Github Actions
+   - Local docker usage
+   - GitHub Actions setup
+
+## Quick Start
+
+```bash
+git clone ...
+cd python-project-blueprint
+uv sync
+uv run python -m python_project_blueprint cli version
+```
 
 ## Features
 
@@ -19,6 +51,8 @@ A blueprint for creating python projects. Copy the contents of this repo into a 
 - CI/CD pipeline (GitHub Actions: test → build → push Docker image)
 - Designed for extensibility (easy to add new commands, handlers, frontends)
 
+## Architecture
+
 ## Installation
 
 ### Requirements
@@ -26,7 +60,7 @@ A blueprint for creating python projects. Copy the contents of this repo into a 
 - **uv** (for dependency and environment management)
 
 ### Setup
-```bash
+```
 git clone https://github.com/kjetilpaulsen/python-project-blueprint.git
 cd python-project-blueprint
 uv sync
@@ -35,6 +69,7 @@ uv sync
 ```
 source .venv/bin/activate
 ```
+### Usage
 To see the list of available commands:
 
 ```
@@ -76,6 +111,7 @@ If you want the app to build a config file in ```~/.config/python-project-bluepr
 ```
 uv run python -m python_project_blueprint cli --build-config
 ```
+### Testing
 The app also supports testing with pytest:
 ```
 uv run pytest
@@ -92,8 +128,6 @@ uv run pytest -V --cov=python_project_blueprint --cov-report=term-missing
 - **Docker**: Used to build and run the API locally
 - **Docker Compose**: Runs the API container (no database required)
 - **GitHub Actions**: Runs tests and builds/pushes Docker images on `release` branch
-
----
 
 ## Local Docker Usage
 
