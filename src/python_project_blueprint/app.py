@@ -1,5 +1,5 @@
 from __future__ import annotations
-from collections.abc import Iterator, Sequence, Callable
+from collections.abc import Iterator, Callable
 import logging
 
 # FIX: change project name for imports

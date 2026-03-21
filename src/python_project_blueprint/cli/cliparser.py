@@ -53,7 +53,6 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
 
     parser.add_argument("--dev-mode", action=argparse.BooleanOptionalAction, default=None, help="Enable developer conviniences")
     parser.add_argument("--dry-run", action=argparse.BooleanOptionalAction, default=None, help="Do not write to DB")
-    parser.add_argument("--build-config", action=argparse.BooleanOptionalAction, default=None, help="Build a .conf file at XDG config path")
 
     parser.add_argument("--log-level", type=str, default=None, help="Set the general logging level for the app")
     parser.add_argument("--console-level", type=str, default=None, help="Set the logging level consolelogging")
@@ -68,13 +67,13 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
     parser.add_argument("--db-password", default=None)
     parser.add_argument("--db-port", type=int, default=None)
 
+    parser.add_argument("--build-config", action=argparse.BooleanOptionalAction, default=None, help="Build a .conf file at XDG config path")
+
     # Subparsers
     subparses = parser.add_subparsers(dest="command")
 
     # Version
     version_parser = subparses.add_parser("version", help="Display the current version")
-
-    # Parse them
 
     args = parser.parse_args(argv)
 
