@@ -24,3 +24,8 @@ class EvtError(Event):
 class EvtResult(Event):
     command_name: str
     payload: object
+
+@dataclass(frozen=True)
+class EvtRequest(Event):
+    command_name: str
+    payload: object

@@ -3,7 +3,8 @@ from __future__ import annotations
 import logging
 
 # FIX: change project name for imports
-from python_project_blueprint.events.events import Event, EvtError, EvtLog, EvtProgress, EvtResult
+from python_project_blueprint.commands.commands import CmdDisplayVersion, Command
+from python_project_blueprint.events.events import Event, EvtError, EvtLog, EvtProgress, EvtRequest, EvtResult
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class CliEventHandler:
     def __init__(self) -> None:
         pass
 
-    def handle(self, evt: Event) -> None:
+    def handle(self, evt: Event) -> None | Command:
         """
         Process an application event and convert it into CLI output.
 
@@ -48,13 +49,22 @@ class CliEventHandler:
         """
         if isinstance(evt, EvtLog):
             logger.info("%s", evt.message)
+            return None
         elif isinstance(evt, EvtProgress):
             # Build progressbar
-            pass
+            return None
         elif isinstance(evt, EvtError):
             logger.error("%s - Fatal=%s", evt.message, evt.fatal)
+            return None
         elif isinstance(evt, EvtResult):
             logger.info("Handling EvtResult ..")
             print(f"{evt.command_name} - {evt.payload}")
+            return None
+        elif isinstance(evt, EvtRequest):
+            logger.info("Requesting from user")
+            # call request function, get returned frontendinputcommand, 
+            # send frontendinputcommand to build_command(), return the built command
+            return None
         else:
             logger.warning("Unhandled event type: %s", type(evt).__name__)
+            return None

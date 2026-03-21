@@ -8,3 +8,9 @@ class Command:
 @dataclass(frozen=True)
 class CmdDisplayVersion(Command):
     uppercase: bool = False
+
+@dataclass(frozen=True)
+class CmdNextProgress: ...
+
+@dataclass(frozen=True)
+class CmdExit: ...
