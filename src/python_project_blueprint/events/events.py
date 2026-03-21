@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+@dataclass(slots=True, frozen=True)
 class Event: 
-    pass
+    command_id: str
 
 @dataclass(frozen=True)
 class EvtLog(Event):

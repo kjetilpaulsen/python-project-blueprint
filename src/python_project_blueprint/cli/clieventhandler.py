@@ -60,29 +60,8 @@ class CliEventHandler:
         """
         event = self._events.get(type(evt))
         if event is None:
-            logger.critical(f"Event not found in _events: {type(evt).__name__}")
+            logger.error(f"Event not found in _events: {type(evt).__name__}")
         return event(evt)
-        # if isinstance(evt, EvtLog):
-        #     logger.info("%s", evt.message)
-        #     return None
-        # elif isinstance(evt, EvtProgress):
-        #     # Build progressbar
-        #     return None
-        # elif isinstance(evt, EvtError):
-        #     logger.error("%s - Fatal=%s", evt.message, evt.fatal)
-        #     return None
-        # elif isinstance(evt, EvtResult):
-        #     logger.info("Handling EvtResult ..")
-        #     print(f"{evt.command_name} - {evt.payload}")
-        #     return None
-        # elif isinstance(evt, EvtRequest):
-        #     logger.info("Requesting from user")
-        #     # call request function, get returned frontendinputcommand, 
-        #     # send frontendinputcommand to build_command(), return the built command
-        #     return None
-        # else:
-        #     logger.warning("Unhandled event type: %s", type(evt).__name__)
-        #     return None
 
     def _handle_evtlog(self, evt) -> None:
         return None

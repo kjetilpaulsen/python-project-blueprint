@@ -8,6 +8,7 @@ from python_project_blueprint.commands.buildcommands import build_commands
 from python_project_blueprint.commands.commands import Command
 from python_project_blueprint.commands.frontendcommandinput import FrontendCommandInput
 from python_project_blueprint.identity import IDENTITY
+from python_project_blueprint.runtime.runtime import Runtime
 from python_project_blueprint.runtime.runtimeoverrides import RuntimeOverrides
 from python_project_blueprint.utils.logging.setuplogging import setup_logging
 from python_project_blueprint.runtime.buildruntime import build_runtime
@@ -48,9 +49,10 @@ def cli(argv: list[str] | None = None) -> int:
     logger.info("--STARTING CLI--")
     try:
         frontendinputcommands, overrides = cli_parser(argv)
+        logger.info(f"{type(frontendinputcommands)}, {frontendinputcommands}")
 
         commands: list[Command] = [build_commands(cmd) for cmd in frontendinputcommands]
-        runtime = build_runtime(overrides)
+        runtime: Runtime = build_runtime(overrides)
 
         setup_logging(IDENTITY.logger_name,
                       runtime.paths,
