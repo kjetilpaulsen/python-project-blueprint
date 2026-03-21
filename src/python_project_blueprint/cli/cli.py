@@ -6,6 +6,7 @@ import logging
 from python_project_blueprint.cli.clieventhandler import CliEventHandler
 from python_project_blueprint.commands.buildcommands import build_commands
 from python_project_blueprint.commands.commands import Command
+from python_project_blueprint.events.events import EvtError
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.runtime import Runtime
 from python_project_blueprint.utils.logging.setuplogging import setup_logging
@@ -48,7 +49,7 @@ def cli(argv: list[str] | None = None) -> int:
     try:
         frontendinputcommands, overrides = cli_parser(argv)
 
-        commands: list[Command] = [build_commands(cmd) for cmd in frontendinputcommands]
+        queue: list[Command] = [build_commands(cmd) for cmd in frontendinputcommands]
         runtime: Runtime = build_runtime(overrides)
 
         setup_logging(IDENTITY.logger_name,
@@ -59,12 +60,16 @@ def cli(argv: list[str] | None = None) -> int:
         app = App(runtime.meta, runtime.dev, runtime.db, runtime.paths)
         evt_handler = CliEventHandler()
 
-        while commands:
-            cmd, *commands = commands
+        while queue:
+            cmd, *queue = queue
             for evt in app.run(cmd):
-                ret = evt_handler.handle(evt)
-                if isinstance(ret, Command):
-                    commands.append(ret)
+                if isinstance(evt, EvtError) and evt.fatal:
+                    logger.error("Fatal error in command %s; %s", cmd.cmd_id, evt.message)
+                    break
+
+                new_cmd = evt_handler.handle(evt)
+                if isinstance(new_cmd, Command):
+                    queue.append(new_cmd)
 
     except KeyboardInterrupt:
         logger.info("Interrupted by user.")
