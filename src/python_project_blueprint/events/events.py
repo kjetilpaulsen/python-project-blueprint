@@ -8,11 +8,11 @@ class Event:
     cmd_id: str # UUID
 
 @dataclass(slots=True, frozen=True)
-class EvtStarted: 
+class EvtStarted(Event): 
     cmd_name: str # Humanreadable name
 
 @dataclass(slots=True, frozen=True)
-class EvtFinished: 
+class EvtFinished(Event): 
     cmd_name: str # Human readable name
     ok: bool # Finished ok?
     summary: str | None = None # Human readable summary

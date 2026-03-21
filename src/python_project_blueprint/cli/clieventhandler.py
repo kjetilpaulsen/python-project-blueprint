@@ -6,7 +6,17 @@ from typing_extensions import Any
 
 # FIX: change project name for imports
 from python_project_blueprint.commands.commands import Command
-from python_project_blueprint.events.events import Event, EvtError, EvtMessage, EvtProgress, EvtRequest, EvtResult
+from python_project_blueprint.events.events import (
+    Event,
+    EvtStarted,
+    EvtFinished,
+    EvtProgress,
+    EvtMessage,
+    EvtError,
+    EvtResult,
+    EvtRequestInput,
+
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,11 +44,13 @@ class CliEventHandler:
     """
     def __init__(self) -> None:
         self._events: dict[type[Event], Callable] ={
-            EvtMessage: lambda evt: self._handle_evtlog(evt),
+            EvtStarted: lambda evt: self._handle_evtstarted(evt),
+            EvtFinished: lambda evt: self._handle_evtfinished(evt),
             EvtProgress: lambda evt: self._handle_evtprogress(evt),
+            EvtMessage: lambda evt: self._handle_evtmessage(evt),
             EvtError: lambda evt: self._handle_evterror(evt),
             EvtResult: lambda evt: self._handle_evtresult(evt),
-            EvtRequest: lambda evt: self._handle_evtrequest(evt),
+            EvtRequestInput: lambda evt: self._handle_evtrequestinput(evt),
 
         }
 
@@ -63,20 +75,34 @@ class CliEventHandler:
             logger.error(f"Event not found in _events: {type(evt).__name__}")
         return event(evt)
 
+    def _handle_evtstarted(self, evt) -> None:
+        logger.info("name=%s, UUID=%s", evt.cmd_name, evt.cmd_id)
+        return None
+
+    def _handle_evtfinished(self, evt) -> None:
+        logger.info("name=%s, UUID=%s, ok=%s, summary=%s", evt.cmd_name, evt.cmd_id, evt.ok, evt.summary)
+        return None
+
+    def _handle_evtprogress(self, evt) -> None:
+        return None
+
     def _handle_evtmessage(self, evt) -> None:
         LOG_LEVEL_MAP = {
             "debug": logger.debug,
-            "info": logger.debug,
+            "info": logger.info,
             "warning": logger.warning,
         }
-    def _handle_evtlog(self, evt) -> None:
+        LOG_LEVEL_MAP.get(evt.level, logger.info)(evt.message)
         return None
-    def _handle_evtprogress(self, evt) -> None:
-        return None
+
     def _handle_evterror(self, evt) -> None:
+        logger.info("code=%s, message=%s, fatal=%s, details=%s", evt.code, evt.message, evt.fatal, evt.details)
         return None
+
     def _handle_evtresult(self, evt) -> None:
-        logger.info(f"{evt.command_name}: {evt.payload}")
+        logger.info("result_type=%s, payload=%s, is_final=%s", evt.result_type, evt.payload, evt.is_final)
         return None
-    def _handle_evtrequest(self, evt) -> None:
+
+    def _handle_evtrequestinput(self, evt) -> None:
+        # Needs to be handled
         return None

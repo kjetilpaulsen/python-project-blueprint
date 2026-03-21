@@ -49,7 +49,6 @@ def cli(argv: list[str] | None = None) -> int:
     logger.info("--STARTING CLI--")
     try:
         frontendinputcommands, overrides = cli_parser(argv)
-        logger.info(f"{type(frontendinputcommands)}, {frontendinputcommands}")
 
         commands: list[Command] = [build_commands(cmd) for cmd in frontendinputcommands]
         runtime: Runtime = build_runtime(overrides)
