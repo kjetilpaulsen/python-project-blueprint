@@ -1,6 +1,8 @@
 from __future__ import annotations
 import logging
 from typing import Callable
+import uuid
+
 
 # FIX: change project name for imports
 from python_project_blueprint.commands.commands import Command, CmdDisplayVersion
@@ -39,7 +41,7 @@ def build_commands(cmd_input: FrontendCommandInput) -> Command:
 
     command_builders: dict[str, Callable[[dict[str, object]], Command]] = {
         "version": lambda opts: CmdDisplayVersion(
-            uppercase=bool(opts.get("uppercase", False))
+            cmd_id = str(uuid.uuid4()),
         ),
     }
 

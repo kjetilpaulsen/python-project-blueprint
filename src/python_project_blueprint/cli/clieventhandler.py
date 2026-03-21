@@ -5,8 +5,8 @@ from typing import Callable, Iterator
 from typing_extensions import Any
 
 # FIX: change project name for imports
-from python_project_blueprint.commands.commands import CmdDisplayVersion, Command
-from python_project_blueprint.events.events import Event, EvtError, EvtLog, EvtProgress, EvtRequest, EvtResult
+from python_project_blueprint.commands.commands import Command
+from python_project_blueprint.events.events import Event, EvtError, EvtMessage, EvtProgress, EvtRequest, EvtResult
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class CliEventHandler:
     """
     def __init__(self) -> None:
         self._events: dict[type[Event], Callable] ={
-            EvtLog: lambda evt: self._handle_evtlog(evt),
+            EvtMessage: lambda evt: self._handle_evtlog(evt),
             EvtProgress: lambda evt: self._handle_evtprogress(evt),
             EvtError: lambda evt: self._handle_evterror(evt),
             EvtResult: lambda evt: self._handle_evtresult(evt),
@@ -63,6 +63,12 @@ class CliEventHandler:
             logger.error(f"Event not found in _events: {type(evt).__name__}")
         return event(evt)
 
+    def _handle_evtmessage(self, evt) -> None:
+        LOG_LEVEL_MAP = {
+            "debug": logger.debug,
+            "info": logger.debug,
+            "warning": logger.warning,
+        }
     def _handle_evtlog(self, evt) -> None:
         return None
     def _handle_evtprogress(self, evt) -> None:

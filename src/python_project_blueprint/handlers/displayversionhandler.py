@@ -4,7 +4,7 @@ from typing import Iterator
 
 # FIX: change project name for imports
 from python_project_blueprint.commands.commands import CmdDisplayVersion
-from python_project_blueprint.events.events import Event, EvtResult
+from python_project_blueprint.events.events import Event, EvtMessage
 from python_project_blueprint.handlers.commandhandler import CommandHandler
 from python_project_blueprint.runtime.runtime import MetaInfo
 
@@ -68,10 +68,9 @@ class DisplayVersionHandler(CommandHandler):
             event containing the resolved version string.
         """
         version = f"v{self.meta.app_version}"
-        if self.cmd.uppercase:
-            version = version.upper()
         logger.debug("Yielding EvtResult ..")
-        yield EvtResult(
-            command_name="DisplayVersion",
-            payload={"version": version},
-            )
+        yield EvtMessage(
+            cmd_id=self.cmd.cmd_id,
+            level="info",
+            message=f"Version: {version}",
+        )

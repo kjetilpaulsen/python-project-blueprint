@@ -73,7 +73,6 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
 
     # Version
     version_parser = subparses.add_parser("version", help="Display the current version")
-    version_parser.add_argument("--uppercase", action="store_true", default=False, help="Displays the version in uppercase letters")
 
     # Parse them
 
@@ -102,7 +101,6 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
             FrontendCommandInput(
                 name="version",
                 options={
-                    "uppercase": args.uppercase,
                 },
             )
         )
