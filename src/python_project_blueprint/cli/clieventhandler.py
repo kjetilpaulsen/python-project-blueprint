@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Callable, Iterator
-from typing_extensions import Any
+from typing import Callable
 
 # FIX: change project name for imports
 from python_project_blueprint.commands.commands import Command
@@ -34,7 +33,7 @@ class CliEventHandler:
 
     Event types currently handled include:
 
-        - `EvtLog`: informational log messages
+        - `EvtMessage`: informational log messages
         - `EvtProgress`: progress updates for long-running tasks
         - `EvtError`: error reporting
         - `EvtResult`: command execution results
