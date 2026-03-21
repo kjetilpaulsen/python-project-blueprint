@@ -5,6 +5,5 @@ class Command:
     cmd_id: str # UUID
 
 @dataclass(frozen=True)
-class CmdDisplayVersion(Command):
-    uppercase: bool = False
+class CmdDisplayVersion(Command): ...
 

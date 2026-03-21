@@ -10,6 +10,13 @@ from python_project_blueprint.runtime.runtime import CFGLogging, AppPaths
 
 _LOGGING_INITIALIZED = False
 
+class MaxLevelFilter(logging.Filter):
+    def __init__(self, max_level: int) -> None:
+        super().__init__()
+        self.max_level = max_level
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.levelno <= self.max_level
 
 def setup_basic_logging() -> None:
     """
@@ -99,6 +106,8 @@ def _configure_logging(appname: str,
     if log.console_log:
         console_handler = logging.StreamHandler(sys.stderr)
         console_handler.setLevel(log.console_level)
+        if log.stderr_log:
+            console_handler.addFilter(MaxLevelFilter(log.stderr_level))
         console_handler.setFormatter(console_formatter)
         root_logger.addHandler(console_handler)
     return None
