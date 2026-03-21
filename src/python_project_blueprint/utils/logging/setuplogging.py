@@ -69,25 +69,31 @@ def _configure_logging(appname: str,
         history_file: Path = paths.logs_dir / f"{appname}_history.log"
 
         # History logging
-        history_handler = RotatingFileHandler(
-                history_file,
-                maxBytes=10_000_000,
-                backupCount=5,
-                encoding="utf-8",
-        )
-        history_handler.setLevel(log.log_level)
-        history_handler.setFormatter(file_formatter)
-        root_logger.addHandler(history_handler)
+        try:
+            history_handler = RotatingFileHandler(
+                    history_file,
+                    maxBytes=10_000_000,
+                    backupCount=5,
+                    encoding="utf-8",
+            )
+            history_handler.setLevel(log.log_level)
+            history_handler.setFormatter(file_formatter)
+            root_logger.addHandler(history_handler)
+        except OSError:
+            logger.exception("Failed to configure rotating file handler logging for %s", history_file)
 
         # Only last run logging
-        last_run_handler = logging.FileHandler(
-            last_run_file,
-            mode="w",
-            encoding="utf-8",
-        )
-        last_run_handler.setLevel(log.log_level)
-        last_run_handler.setFormatter(file_formatter)
-        root_logger.addHandler(last_run_handler)
+        try:
+            last_run_handler = logging.FileHandler(
+                last_run_file,
+                mode="w",
+                encoding="utf-8",
+            )
+            last_run_handler.setLevel(log.log_level)
+            last_run_handler.setFormatter(file_formatter)
+            root_logger.addHandler(last_run_handler)
+        except OSError:
+            logger.exception("Failed to configure file handler logging for %s", last_run_file)
 
     # If also want logging output to screen
     if log.console_log:
