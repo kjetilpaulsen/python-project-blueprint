@@ -1,16 +1,10 @@
 from dataclasses import dataclass
 
+@dataclass(slots=True, frozen=True)
 class Command:
-    """
-    Base class for one-shot app commands.
-    """
+    cmd_id: str # UUID
 
 @dataclass(frozen=True)
 class CmdDisplayVersion(Command):
     uppercase: bool = False
 
-@dataclass(frozen=True)
-class CmdNextProgress: ...
-
-@dataclass(frozen=True)
-class CmdExit: ...
