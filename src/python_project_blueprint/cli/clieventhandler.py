@@ -95,7 +95,7 @@ class CliEventHandler:
         return None
 
     def _handle_evterror(self, evt) -> None:
-        logger.info("code=%s, message=%s, fatal=%s, details=%s", evt.code, evt.message, evt.fatal, evt.details)
+        logger.error("code=%s, message=%s, fatal=%s, details=%s", evt.code, evt.message, evt.fatal, evt.details)
         return None
 
     def _handle_evtresult(self, evt) -> None:

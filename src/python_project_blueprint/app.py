@@ -4,7 +4,7 @@ import logging
 
 # FIX: change project name for imports
 from python_project_blueprint.commands.commands import Command, CmdDisplayVersion
-from python_project_blueprint.events.events import Event
+from python_project_blueprint.events.events import Event, EvtError
 from python_project_blueprint.handlers.displayversionhandler import DisplayVersionHandler
 from python_project_blueprint.runtime.runtime import AppPaths, CFGDataBase, CFGDev, MetaInfo
 
@@ -78,7 +78,20 @@ class App:
             Event: Events produced during command execution.
         """
         logger.debug("Starting run(cmd) ..")
-        handler = self._handlers.get(type(cmd)) 
-        if handler is None:
-            raise ValueError(f"Command not found in _handlers: {type(cmd).__name__}")
-        yield from handler(cmd)
+        try:
+            handler = self._handlers.get(type(cmd)) 
+            if handler is None:
+                raise ValueError(f"Command not found in _handlers: {type(cmd).__name__}")
+            yield from handler(cmd)
+        except ValueError:
+            raise
+        except Exception as exc:
+            logger.exception("Unhandled exception while running command %s", type(cmd).__name__)
+            yield EvtError(
+                cmd_id=cmd.cmd_id, 
+                code="UNHANDELED_EXCEPTION", 
+                message=str(exc), 
+                fatal=True, 
+                details={"command_type": type(cmd).__name__,
+                },
+            )

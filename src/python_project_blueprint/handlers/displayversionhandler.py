@@ -69,6 +69,7 @@ class DisplayVersionHandler(CommandHandler):
         """
         version = f"v{self.meta.app_version}"
         logger.debug("Yielding EvtResult ..")
+        a = b
         yield EvtMessage(
             cmd_id=self.cmd.cmd_id,
             level="info",

@@ -101,7 +101,6 @@ def setup_logging(appname: str, paths: AppPaths, log: CFGLogging) -> None:
     """
     CLI-style logging setup: always rebuild the process logging config.
     """
-
     global _LOGGING_INITIALIZED
     _configure_logging(appname, paths, log)
     _LOGGING_INITIALIZED = True
