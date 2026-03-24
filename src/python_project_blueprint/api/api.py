@@ -126,46 +126,68 @@ def _event_to_api(evt: Event) -> APIEvent:
         APIEvent: Serialized representation of the event suitable for
         inclusion in an API response.
     """
+    if isinstance(evt, EvtStarted):
+        return APIEvent(type="evtstarted",
+                        data={
+                        "cmd_id": evt.cmd_id,
+            },
+        )
+    if isinstance(evt, EvtFinished):
+        return APIEvent(type="evtfinished",
+                        data={
+                        "cmd_id": evt.cmd_id,
+                        "cmd_name": evt.cmd_name,
+                        "ok": evt.ok,
+                        "summary": evt.summary,
+            },
+        )
+    if isinstance(evt, EvtProgress):
+        return APIEvent(type="evtprogress",
+                        data={
+                        "cmd_id": evt.cmd_id,
+                        "current": evt.current,
+                        "total": evt.total,
+                        "message": evt.message,
+            },
+        )
     if isinstance(evt, EvtLogMessage):
-        return APIEvent(type="message", 
+        return APIEvent(type="evtlogmessage", 
                         data={
                         "cmd_id": evt.cmd_id,
                         "level": evt.level,
                         "message": evt.message,
             },
         )
-
-    if isinstance(evt, EvtProgress):
-        return APIEvent(
-            type="progress",
-            data={
-                "cmd_id": evt.cmd_id,
-                "current": evt.current,
-                "total": evt.total,
-                "message": evt.message,
-            },
-        )
-
     if isinstance(evt, EvtError):
-        return APIEvent(
-            type="error",
-            data={
-                "cmd_id": evt.cmd_id,
-                "code": evt.code,
-                "message": evt.message,
-                "fatal": evt.fatal,
-                "details": evt.details,
+        return APIEvent(type="evterror",
+                        data={
+                        "cmd_id": evt.cmd_id,
+                        "code": evt.code,
+                        "message": evt.message,
+                        "fatal": evt.fatal,
+                        "details": evt.details,
             },
         )
 
     if isinstance(evt, EvtResult):
-        return APIEvent(
-            type="result",
-            data={
-                "cmd_id": evt.cmd_id,
-                "result_type": evt.result_type,
-                "payload": evt.payload,
-                "is_final": evt.is_final,
+        return APIEvent(type="evtresult",
+                        data={
+                        "cmd_id": evt.cmd_id,
+                        "result_type": evt.result_type,
+                        "payload": evt.payload,
+                        "is_final": evt.is_final,
+            },
+        )
+    if isinstance(evt, EvtRequestInput):
+        return APIEvent(type="evtrequestinput",
+                        data={
+                        "cmd_id": evt.cmd_id,
+                        "request_id": evt.request_id,
+                        "prompt": evt.prompt,
+                        "input_kind": evt.input_kind,
+                        "field_name": evt.field_name,
+                        "required": evt.required,
+                        "choices": evt.choices,
             },
         )
 
@@ -248,11 +270,24 @@ def run_commands(req: APIRunRequest) -> APIRunResponse:
         raise HTTPException(status_code=500, detail="Runtime not initialized")
 
     try:
-        command_inputs = _build_command_inputs(req)
-        commands = build_commands(command_inputs)
+        frontendinputcommands = _build_command_inputs(req)
+        # commands = build_commands(command_inputs)
+        queue: list[Command] = [build_commands(cmd) for cmd in frontendinputcommands]
 
         app = App(_RUNTIME.meta, _RUNTIME.dev, _RUNTIME.db, _RUNTIME.paths)
-        events = [_event_to_api(evt) for evt in app.run(commands)]
+        while queue:
+            cmd, *queue = queue
+            for evt in app.run(cmd):
+                if isinstance(evt, EvtError) and evt.fatal:
+                    logger.error("Fatal error in command %s; %s", cmd.cmd_id, evt.message)
+                    break
+
+                new_cmd = _event_to_api(evt)
+                if isinstance(new_cmd, Command):
+                    queue.append(new_cmd)
+
+
+        # events = [_event_to_api(evt) for evt in app.run(commands)]
 
         return APIRunResponse(ok=True, events=events)
 
