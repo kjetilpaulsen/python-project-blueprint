@@ -10,7 +10,7 @@ from python_project_blueprint.events.events import (
     EvtStarted,
     EvtFinished,
     EvtProgress,
-    EvtMessage,
+    EvtLogMessage,
     EvtError,
     EvtResult,
     EvtRequestInput,
@@ -46,7 +46,7 @@ class CliEventHandler:
             EvtStarted: lambda evt: self._handle_evtstarted(evt),
             EvtFinished: lambda evt: self._handle_evtfinished(evt),
             EvtProgress: lambda evt: self._handle_evtprogress(evt),
-            EvtMessage: lambda evt: self._handle_evtmessage(evt),
+            EvtLogMessage: lambda evt: self._handle_evtlogmessage(evt),
             EvtError: lambda evt: self._handle_evterror(evt),
             EvtResult: lambda evt: self._handle_evtresult(evt),
             EvtRequestInput: lambda evt: self._handle_evtrequestinput(evt),
@@ -85,7 +85,7 @@ class CliEventHandler:
     def _handle_evtprogress(self, evt) -> None:
         return None
 
-    def _handle_evtmessage(self, evt) -> None:
+    def _handle_evtlogmessage(self, evt) -> None:
         LOG_LEVEL_MAP = {
             "debug": logger.debug,
             "info": logger.info,

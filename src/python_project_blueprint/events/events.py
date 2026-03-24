@@ -24,7 +24,7 @@ class EvtProgress(Event):
     message: str | None = None # Optional message
 
 @dataclass(slots=True, frozen=True)
-class EvtMessage(Event):
+class EvtLogMessage(Event):
     level: Literal["debug", "info", "warning"] # Severity
     message: str # Message
 
