@@ -129,6 +129,7 @@ def _event_to_api(evt: Event) -> APIEvent:
     if isinstance(evt, EvtLogMessage):
         return APIEvent(type="message", 
                         data={
+                        "cmd_id": evt.cmd_id,
                         "level": evt.level,
                         "message": evt.message,
             },
@@ -138,6 +139,7 @@ def _event_to_api(evt: Event) -> APIEvent:
         return APIEvent(
             type="progress",
             data={
+                "cmd_id": evt.cmd_id,
                 "current": evt.current,
                 "total": evt.total,
                 "message": evt.message,
@@ -148,8 +150,11 @@ def _event_to_api(evt: Event) -> APIEvent:
         return APIEvent(
             type="error",
             data={
+                "cmd_id": evt.cmd_id,
+                "code": evt.code,
                 "message": evt.message,
                 "fatal": evt.fatal,
+                "details": evt.details,
             },
         )
 
