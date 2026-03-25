@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 # FIX: change project name for imports
 from python_project_blueprint.app import App
 from python_project_blueprint.commands.buildcommands import build_commands
+from python_project_blueprint.commands.commands import Command
 from python_project_blueprint.identity import IDENTITY
 from python_project_blueprint.runtime.buildruntime import build_runtime
 from python_project_blueprint.commands.frontendcommandinput import FrontendCommandInput 
@@ -28,10 +29,11 @@ from python_project_blueprint.runtime.runtime import Runtime
 from python_project_blueprint.utils.logging.setuplogging import ensure_setup_logging
 from python_project_blueprint.utils.utils import resolve_version
 from python_project_blueprint.runtime.logruntime import log_runtime
-
 logger = logging.getLogger(__name__)
 
 _RUNTIME: Runtime | None = None 
+
+_SESSION_STORE: dict[str, Session] = {}
 
 
 
@@ -297,3 +299,5 @@ def run_commands(req: APIRunRequest) -> APIRunResponse:
         logger.exception("Unhandled API error")
         raise HTTPException(status_code=500, detail="Internal server error") from exc
 
+@api.post("/run/{session_id}", response_model=APIRunResponse)
+def run_with_session(session_id: str, req: APIRunRequest) -> APIRunResponse:
