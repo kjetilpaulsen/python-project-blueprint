@@ -301,3 +301,16 @@ def run_commands(req: APIRunRequest) -> APIRunResponse:
 
 @api.post("/run/{session_id}", response_model=APIRunResponse)
 def run_with_session(session_id: str, req: APIRunRequest) -> APIRunResponse:
+    """
+    Continous executing under an existing session
+    """
+    if _RUNTIME is None:
+        raise HTTPException(status_code=500, detail="Runtime not initialized")
+
+    session = _SESSION_STORE.get(session_id)
+    if session is None:
+        raise HTTPException(status_code=404, detail="Session not found or already consumed")
+
+    if not req.commands:
+        raise HTTPException(status_code=400, detail="No commands provided")
+
