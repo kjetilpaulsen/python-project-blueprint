@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 # FIX: change project name for imports
+from python_project_blueprint.api.session import Session
 from python_project_blueprint.app import App
 from python_project_blueprint.commands.buildcommands import build_commands
 from python_project_blueprint.commands.commands import Command
