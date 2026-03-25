@@ -314,3 +314,30 @@ def run_with_session(session_id: str, req: APIRunRequest) -> APIRunResponse:
     if not req.commands:
         raise HTTPException(status_code=400, detail="No commands provided")
 
+    api_cmd = req.commands[0]
+    echoed_request_id = api_cmd.options.get("request_id")
+    if echoed_request_id and echoed_request_id != session.request_id:
+        raise HTTPException(status_code=409, detail="request_id mismatch")
+
+
+    del _SESSION_STORE[session_id]
+
+    try:
+        enriched_options = {**api_cmd.options, "_session": session}
+        frontend_input = FrontendCommandInput(name=api_cmd.name, options=enriched_options)
+        cmd = build_commands(frontend_input)
+        app = App(_RUNTIME.meta, _RUNTIME.dev, _RUNTIME.db, _RUNTIME.paths)
+
+        events: list[APIEvent] = []
+        for evt in app.run(cmd):
+            events.append(_event_to_api(evt))
+            if isinstance(evt, EvtError) and evt.fatal:
+                return APIRunResponse(ok=False, events=events)
+
+        return APIRunResponse(ok=True, events=events)
+
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Unhandled error in session run")
+        raise HTTPException(status_code=500, detail="Internal server error") from exc
