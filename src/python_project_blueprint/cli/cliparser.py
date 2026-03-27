@@ -51,6 +51,17 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
 
     parser = argparse.ArgumentParser(prog = IDENTITY.app_name)
 
+    # Consider also adding these:
+    # "--env=production" : explicitly name prod/staging/local etc. bake it into dev? 
+    # "--output-format=json/csv/text/table": hmm, maybe
+    # "--quiet" bool: supress non-errors
+    # "--verbose" bool: opposite
+    # "--timeout" int in sec: for global requests/operation timeouts. useful for netweork calls
+    # "--retries" int: related for retrying after timeouts etc
+    # "--workers" int: for concurrency if that is involved
+    # "--trace-id" string: inject a correlation ID if used by other programs
+    # "--metrics" bool: if we want to emit metrics.
+
     parser.add_argument("--dev-mode", action=argparse.BooleanOptionalAction, default=None, help="Enable developer conviniences")
     parser.add_argument("--dry-run", action=argparse.BooleanOptionalAction, default=None, help="Do not write to DB")
 
